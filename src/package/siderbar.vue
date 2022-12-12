@@ -1,44 +1,28 @@
 <template>
-  <div class="sidebar">
-    <div id="sidebar_graph_container"></div>
-    <a-collapse v-model:activeKey="activeKey" :bordered="false" @change="hadnleCollaspeChange">
-      <a-collapse-panel key="1" header="绘图工具">
-        <div v-for="(item, index) in htmls" :key="index" class="sidebar_item" :ref="getSidebarRef"
-          :data-realWidth="item.width" :data-realHeight="item.height" :data-type="item.cell.isVertex()"
-          @mousedown="handleItemMouseDown(item)" @mouseenter="(e) => handleItemHover(item, e)"
-          @mouseleave="hadnleItemMouseLeave">
-          <div class="svg_logo" v-html="item.html"></div>
-          <span :title="item.code">{{ item.code}}</span>
-        </div>
-        <div class="sidebar_preview">
+  <div class="sidebar shadow-sm relative overflow-auto">
+    <div id="sidebar_graph_container" class="overflow-auto"></div>
+    <div v-for="(item, index) in htmls" :key="index" class="sidebar_item cursor-pointer flex p-2 justify-start align-middle hover:bg-gray-300" :ref="getSidebarRef"
+      :data-realWidth="item.width" :data-realHeight="item.height" :data-type="item.cell.isVertex()"
+      @mousedown="handleItemMouseDown(item)">
+      <div class="w-12 h-8" v-html="item.html"></div>
+      <span class="truncate leading-8" :title="item.code">{{ item.code }}</span>
+    </div>
+    <!-- <div class="sidebar_preview">
           <div class="sidebar_preview_svg">
             <div class="svg_wrapper"></div>
           </div>
           <div class="sidebar_preview_title">{{ previewTitle }}</div>
-        </div>
-      </a-collapse-panel>
-      <a-collapse-panel key="2" header="引用数据" v-if="props.importDataType">
-        <div v-for="(item, index) in importDataHTMls" :key="index" class="sidebar_item" :ref="getSidebarRef"
-          :data-realWidth="item.width" :data-realHeight="item.height" :data-type="item.cell.isVertex()"
-          :data-import="true" @mousedown="handleItemMouseDown(item)">
-          <div class="svg_logo" v-html="item.html"></div>
-          <span :title="item.code">{{ item.code }}</span>
-        </div>
-      </a-collapse-panel>
-    </a-collapse>
-
+        </div> -->
     <slot name="sidebar">
 
     </slot>
   </div>
 </template>
-<script lang="ts">
-// 使用 defineComponent 来进行类型推断
-import { defineComponent } from 'vue'
 
-export default defineComponent({
-  name: 'Sidebar'
-})
+<script lang="ts">
+export default {
+  name: "Sidebar",
+}
 </script>
 <script setup lang="ts">
 import { ref, onMounted, nextTick, Ref, inject, shallowRef } from 'vue'
@@ -48,11 +32,7 @@ import mx from './factory';
 import _ from 'lodash';
 import MyGraph from './graph'
 import { mxCell as TypeMxCell } from 'mxgraph'
-import { ImportData, SidebarItem, SidebarHTMLItem } from './type/sidebar'
-import { nodeConfig } from './shape.config';
-import { NodeConfig, NodeDefaultConfig } from './type/node';
-import { EdgeConfig } from './type/edge';
-import { transfromNode } from './transfrom';
+import { SidebarNode, NodeConfig, SidebarHTMLItem } from './type/type'
 
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
 
@@ -67,100 +47,80 @@ const itemHeight = 30
 const makeDragPanels: string[] = ['1']
 const props = defineProps<{
   graph?: MyGraph
-  importDataType?: ImportData[]
+  nodes: SidebarNode[]
 }>()
 const emits = defineEmits<{
   (e: 'changeEdge', node: TypeMxCell, id: string): void
 }>()
 const selectCell = shallowRef<TypeMxCell>()
-const sidebarItems = inject<Readonly<Ref<SidebarItem[]>>>('sidebarItems', ref([]))
 onMounted(() => {
   graph.value = new MyGraph(document.querySelector('#sidebar_graph_container') as HTMLElement)
   graph.value?._setDefaultConfig()
-  transformNodeToCell()
+  loadNodes()
+  nextTick(() => {
+    makeDraggableAndHover()
+  })
 })
 
-const getSidebarRef = (ele: any) => {
-  sidebarDoms.value.push(ele)
-}
-const transformNodeToCell = () => {
-  sidebarItems.value.forEach(ele => {
-    if (ele.type === 'node' || ele.type === 'combo') {
-      const config = nodeConfig.find(config => config.shapeType === ele.shapeType) as NodeDefaultConfig
-      if (!config) {
-        console.error(`没有找到shapeType为${ele.shapeType}`)
-        return
-      }
-      const { height, width } = config
+const loadNodes = () => {
+  props.nodes.forEach((ele, index) => {
+    if (ele.type === 'vertex') {
+      const { height, width } = ele
       const node: NodeConfig = {
         id: '',
-        width: config.width,
-        height: config.height,
+        width: width,
+        height: height,
         x: 0,
         y: 0,
-        style: `shape=${ele.shapeType}`,
+        style: ele.style,
         type: 'vertex',
-        info: {
-          name: config.name,
-          description: '',
-          shapeType: ele.shapeType,
-          code: config.code,
-          referers: [],
-          attributes: [],
-          type: config.type,
-          behaviors: [],
-        }
+        info: ele.info
       }
       const cell = graph.value?.insertVertetByConfig(node)
       if (cell) {
-        const html = createItem([cell], config.code, width, height)
+        const html = createItem([cell], ele.name, width, height)
         htmls.value.push({
           html: html as string,
           width,
           height,
           cell: cell,
-          id: ele.id,
-          code: config.code,
+          code: ele.name,
         })
       }
     } else if (ele.type === 'edge') {
-      const styles = props.graph?.getLineStyle(ele.shapeType)
-      if (!styles) return
-      const { style, code } = styles
-      const edge: EdgeConfig = {
-        shapeType: ele.shapeType,
-        style: `${style}`,
+      // const styles = props.graph?.getLineStyle(ele.shapeType)
+      // if (!styles) return
+      // const { style, code } = styles
+      const edge: NodeConfig = {
+        id: '',
+        width: ele.width,
+        height: ele.height,
+        x: 0,
+        y: 0,
+        style: ele.style,
+        type: 'edge',
+        info: {},
         value: '',
       }
-      const cell = graph.value?.insertEdgeByConfig(edge) as TypeMxCell
-      cell.info = {
-        code,
-        name: '',
-        description: '',
-        shapeType: ele.shapeType,
-        referers: [],
-        attributes: [],
-        type: 'edge',
-        behaviors: [],
-      }
-      cell.geometry.sourcePoint = new mxPoint(0, 0)
-      cell.geometry.targetPoint = new mxPoint(100, 0)
+      const cell = graph.value?.insertEdgeByConfig(edge)
       if (cell) {
-        const html = createItem([cell], code, 200, 100)
+
+        cell.geometry.sourcePoint = new mxPoint(0, 0)
+        cell.geometry.targetPoint = new mxPoint(100, 0)
+        const html = createItem([cell], ele.name, 200, 100)
         htmls.value.push({
           html: html as string,
           width: 200,
           height: 100,
           cell: cell,
-          id: ele.id,
-          code,
+          code: ele.name,
         })
       }
     }
   })
-  nextTick(() => {
-    makeDraggableAndHover()
-  })
+}
+const getSidebarRef = (ele: any) => {
+  sidebarDoms.value.push(ele)
 }
 
 const getTextWidth = (text: string, font: string) => {
@@ -214,23 +174,17 @@ const makeDraggableAndHover = () => {
     dragElt.style.width = `${width}px`
     dragElt.style.height = `${height}px`
     dragElt.style.border = '1px dashed #000'
-    const isVertex = ele.getAttribute("data-type")
-    if (isVertex === 'false') return
     mxUtils.makeDraggable(ele as HTMLElement, props.graph as MyGraph, dropSuccessCb, dragElt, undefined, undefined, undefined, true)
   })
-
 }
 
 const handleItemMouseDown = (item: SidebarHTMLItem) => {
-  if (item.cell.isEdge()) {
-    emits('changeEdge', item.cell, item.id)
-  }
   selectCell.value = _.cloneDeep(item.cell)
 }
 const previewSvg = ref<Node>()
 const previewTitle = ref<string>('')
 const handleItemHover = (item: SidebarHTMLItem, e: MouseEvent) => {
-  const name = item.cell.info.code
+  const name = item.code
   const node = previewNodeData.get(name) as Node
   const width = previewWidth.get(name)
   const height = previewHeight.get(name)
@@ -249,22 +203,20 @@ const clearPreviewSvg = () => {
   previewWrapper.style.display = 'none'
 }
 const hadnleItemMouseLeave = () => {
-  clearPreviewSvg()
+  // clearPreviewSvg()
 }
 const hadnleCollaspeChange = (key: string) => {
   if (!makeDragPanels.includes(key)) {
     makeDragPanels.push(key)
-    nextTick(() => {
-      makeDraggableAndHover()
-    })
+    
   }
 }
 const activeKey = ref<string>('1')
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .sidebar {
-  width: 150px;
+  width: 100%;
   height: 100%;
   background: #fbfbfb;
   border-top: 1px solid #eee;
@@ -274,30 +226,30 @@ const activeKey = ref<string>('1')
   overflow: auto;
 }
 
-.sidebar_item {
-  width: 100%;
-  height: 30px;
-  display: block;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+// .sidebar_item {
+//   width: 100%;
+//   height: 30px;
+//   display: block;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
 
-  .svg_logo {
-    width: 40px;
-    height: 30px;
-    display: inline-block;
-  }
+//   .svg_logo {
+//     width: 40px;
+//     height: 30px;
+//     display: inline-block;
+//   }
 
-  span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-}
+//   span {
+//     white-space: nowrap;
+//     text-overflow: ellipsis;
+//     overflow: hidden;
+//   }
+// }
 
-.sidebar_item:hover {
-  background-color: #e0e0e0;
-}
+// .sidebar_item:hover {
+//   background-color: #e0e0e0;
+// }
 
 .palette_item {
   position: relative;
@@ -368,7 +320,7 @@ const activeKey = ref<string>('1')
   height: 500px;
 }
 </style>
-<style lang="less">
+<style lang="scss">
 .sidebar {
   .ant-collapse {
     .ant-collapse-header {

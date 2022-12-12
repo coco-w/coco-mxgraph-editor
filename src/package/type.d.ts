@@ -1,3 +1,4 @@
+declare module 'react-xml-parser'
 import { Action } from './actions';
 import MyGraph from './graph';
 declare global {
@@ -6,7 +7,6 @@ declare global {
   }
   
 }
-
 declare module "mxgraph" {
   export interface mxKeyHandler {
     bindAction: (

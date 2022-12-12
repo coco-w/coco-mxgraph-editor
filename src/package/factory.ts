@@ -1,6 +1,5 @@
 import factory, { mxCell } from 'mxgraph'
 import MyGraph from './graph'
-
 // const mx = 
 declare global {
   interface Window {

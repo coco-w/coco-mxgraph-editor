@@ -1,18 +1,16 @@
 import mx from "./factory"
-// import XMLParser from "react-xml-parser"
-// import myStyle from "./defaultStyle"
-import { NodeConfig, NodeInfo } from "./type/node"
 import {
   mxCell as typeMxCell,
-  mxConnectionConstraint as typeMxConnectionConstraint,
-  mxEventObject as typeMxEventObject,
   mxPopupMenuHandler,
+  mxEventObject as typeMxEventObject,
 } from "mxgraph"
-import { EdgeConfig } from "./type/edge"
 import { Action } from "./actions"
+import XMLParser from "react-xml-parser"
+import myStyle from "./defaultStyle"
 import { nanoid } from "nanoid"
-import { message } from "ant-design-vue"
-
+import { ctrlKey, keyCode } from "./defaultConfig"
+import { isProxy } from "vue"
+import { NodeConfig } from "./type/type"
 const {
   mxGraph,
   mxRubberband,
@@ -29,10 +27,11 @@ const {
   mxPoint,
   mxConnectionConstraint,
 } = mx
+
 class MyGraph extends mxGraph {
   gridColor: string = "#d0d0d0"
   showGrid: boolean = true
-  // rubberband = new mxRubberband(this)
+  rubberband = new mxRubberband(this)
   keyHandler = new mxKeyHandler(this)
   currentEdge?: {
     style: string
@@ -55,6 +54,7 @@ class MyGraph extends mxGraph {
   handleAddEdge?: (cell: typeMxCell) => void
   handleDropIn?: (target: typeMxCell, cells: typeMxCell[]) => void
   handleDropOut?: (target: typeMxCell, cells: typeMxCell[]) => void
+  handleMoveCell?: (cell: typeMxCell) => void
   handleSizeChange?: (props: {
     x: string
     y: string
@@ -73,19 +73,30 @@ class MyGraph extends mxGraph {
     //右键平移
     this.setPanning(true)
     this._setAnchors()
-    this._initKeyHandler()
     this._setDefaultConfig()
     this._setDefaultEdgeStyle()
     this._rightClickMenu()
-    this._initEvent()
-    this._setDrop()
+    // this._setDrop()
     this.setGrid()
+    this._initActionState()
+    this.keyHandler.actions = this.actions
+    this._initKeyHandler()
+    this.addUndoListener()
+    /**监听状态变化 */
+    this.getSelectionModel().addListener(mxEvent.CHANGE, () => {
+      this._initActionState()
+    })
+
+    this.getModel().addListener(mxEvent.CHANGE, () => {
+      this._initActionState()
+    })
   }
   _setDefaultConfig() {
+    // cell style editable 控制是否可以双击编辑
     this.setConnectable(true)
     mxEvent.disableContextMenu(this.container)
     // // 固定节点大小
-    // this.setCellsResizable(false)
+    this.setCellsResizable(false)
     // // 编辑时按回车键不换行，而是完成输入
     // this.setEnterStopsCellEditing(true)
     // // 编辑时按 escape 后完成输入
@@ -111,14 +122,14 @@ class MyGraph extends mxGraph {
     // // 禁止从将label从线条上拖离
     mxGraph.prototype.edgeLabelsMovable = false
     // 样式
-    // const style = new XMLParser().parseFromString(myStyle)
-    // style.children.forEach((ele: any) => {
-    //   const node: { [k: string]: string } = {}
-    //   ele.children.forEach((element: any) => {
-    //     node[element.attributes.as] = element.attributes.value
-    //   })
-    //   this.getStylesheet().putCellStyle(ele.attributes.as, node)
-    // })
+    const style = new XMLParser().parseFromString(myStyle)
+    style.children.forEach((ele: any) => {
+      const node: { [k: string]: string } = {}
+      ele.children.forEach((element: any) => {
+        node[element.attributes.as] = element.attributes.value
+      })
+      this.getStylesheet().putCellStyle(ele.attributes.as, node)
+    })
   }
   _setDefaultEdgeStyle() {
     const style = this.getStylesheet().getDefaultEdgeStyle()
@@ -146,20 +157,23 @@ class MyGraph extends mxGraph {
     }
   }
   _initKeyHandler() {
-    // for (const key in this.actions.action) {
-    //   if (Object.hasOwnProperty.call(this.actions.action, key)) {
-    //     const action = this.actions.action[key]
-    //     const shortcutKey = action.shortcutKey
-    //     if (shortcutKey) {
-    //       const keyArray = shortcutKey.split('+')
-    //       const isCtrl = keyArray.includes(ctrlKey)
-    //       const isShift = keyArray.includes('Shift')
-    //       const isDownKey = keyArray[keyArray.length - 1] === '加' ? '+' : keyArray[keyArray.length - 1]
-    //       const downKey = keyCode[isDownKey]
-    //       this.keyHandler.bindAction(downKey, isCtrl, key, isShift)
-    //     }
-    //   }
-    // }
+    for (const key in this.actions.action) {
+      if (Object.hasOwnProperty.call(this.actions.action, key)) {
+        const action = this.actions.action[key]
+        const shortcutKey = action.shortcutKey
+        if (shortcutKey) {
+          const keyArray = shortcutKey.split("+")
+          const isCtrl = keyArray.includes(ctrlKey)
+          const isShift = keyArray.includes("Shift")
+          const isDownKey =
+            keyArray[keyArray.length - 1] === "加"
+              ? "+"
+              : keyArray[keyArray.length - 1]
+          const downKey = keyCode[isDownKey]
+          this.keyHandler.bindAction(downKey, isCtrl, key, isShift)
+        }
+      }
+    }
   }
   _setDrop() {
     this.setDropEnabled(true)
@@ -170,23 +184,46 @@ class MyGraph extends mxGraph {
       return false
     }
   }
-  _initEvent() {
-    console.log("event")
-    this.addListener(
-      mxEvent.CELLS_RESIZED,
-      (graph: MyGraph, eventObject: typeMxEventObject) => {
-        const cells: typeMxCell[] = eventObject.getProperty("cells")
-        if (this.handleSizeChange) {
-          const props = {
-            x: String(cells[0].geometry.x),
-            y: String(cells[0].geometry.y),
-            width: String(cells[0].geometry.width),
-            height: String(cells[0].geometry.height),
-            id: cells[0].id,
+  /**
+   * 初始化大部分action的是否可用状态
+   * toolbar是否可用操作通过这个函数进行状态管理
+   */
+  _initActionState() {
+    let selected = !this.isSelectionEmpty()
+    let vertexSelected = false
+    let groupSelected = false
+    let edgeSelected = false
+    const cells = this.getSelectionCells()
+    if (cells != null) {
+      for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i]
+
+        if (this.getModel().isEdge(cell)) {
+          edgeSelected = true
+        }
+
+        if (this.getModel().isVertex(cell)) {
+          vertexSelected = true
+
+          if (this.getModel().getChildCount(cell) > 0) {
+            groupSelected = true
           }
         }
+
+        if (edgeSelected && vertexSelected) {
+          break
+        }
       }
-    )
+    }
+    const actions = ["cut", "copy", "delete", "toFront", "toBack"]
+    for (var i = 0; i < actions.length; i++) {
+      this.actions.get(actions[i]).setEnabled(selected)
+    }
+    var oneVertexSelected = vertexSelected && this.getSelectionCount() == 1
+    this.actions
+      .get("group")
+      .setEnabled(this.getSelectionCount() > 1 || oneVertexSelected)
+    this.actions.get("ungroup").setEnabled(groupSelected)
   }
   _setAnchors() {
     // 禁止从节点中心拖拽出线条
@@ -233,22 +270,6 @@ class MyGraph extends mxGraph {
     this.popupMenuHandler.factoryMethod = (menu, cell, evt) => {
       const cells = this.getSelectionCells()
       if (cells.length > 0) {
-        if (cells.length === 1) {
-          const cell = cells[0]
-          if (!cell.edge) {
-            menu.addItem(
-              "特性",
-              undefined,
-              this.nodeProps.open.bind(this, cells[0])
-            )
-          } else {
-            menu.addItem(
-              "特性",
-              undefined,
-              this.edgeProps.open.bind(this, cells[0])
-            )
-          }
-        }
         if (this.cellRightClick) {
           this.cellRightClick(cells, menu)
         }
@@ -335,16 +356,24 @@ class MyGraph extends mxGraph {
     image = "url(" + "data:image/svg+xml;base64," + image + ")"
     this.container.style.backgroundImage = `${image}`
   }
-  insertEdgeByConfig(cfg: EdgeConfig) {
-    const cell = this.insertEdge(
-      this.defaultParent,
-      cfg.id ? cfg.id : null,
-      cfg.value,
-      cfg.source as typeMxCell,
-      cfg.target as typeMxCell,
-      cfg.style
-    )
-    return cell
+  sidebarToGraph(
+    dragCell: typeMxCell,
+    x: number,
+    y: number,
+    target: typeMxCell
+  ) {
+    try {
+      this.getModel().beginUpdate()
+      dragCell.id = nanoid()
+      this.createVertexStatus = true
+      const cell = this.importCells([dragCell], x, y, target)
+      this.setSelectionCells(cell)
+      this.createVertexStatus = false
+      this.handleAddVertex && this.handleAddVertex(cell[0], x, y, target)
+    } finally {
+      this.getModel().endUpdate()
+    }
+    // this.refresh()
   }
   insertVertetByConfig(cfg: NodeConfig) {
     let parent = this.getDefaultParent()
@@ -360,98 +389,25 @@ class MyGraph extends mxGraph {
       cfg.width,
       cfg.height,
       cfg.style,
-      undefined,
-      cfg.info
+      undefined
     )
+    cell.info = cfg.info
     return cell
   }
-  insertVertex(
+  insertEdge(
     parent: typeMxCell,
     id: string | null,
     value: any,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    style?: string | undefined,
-    relative?: boolean | undefined,
-    info?: NodeInfo
-  ) {
-    var vertex = this.createVertex(
-      parent,
-      id,
-      value,
-      x,
-      y,
-      width,
-      height,
-      style,
-      relative
-    )
-    if (info) vertex.info = info
-    return this.addCell(vertex, parent)
-  }
-  getAllCells(): typeMxCell[] {
-    const cells: typeMxCell[] = []
-    for (const key in this.model.cells) {
-      if (Object.prototype.hasOwnProperty.call(this.model.cells, key)) {
-        const element = this.model.cells[key]
-        if (key !== "0" && key !== "1") {
-          cells.push(element)
-        }
-      }
+    source: typeMxCell,
+    target: typeMxCell,
+    style?: string | undefined
+  ): typeMxCell {
+    let edge = this.createEdge(parent, id, value, source, target, style)
+    edge = this.addEdge(edge, parent, source, target)
+    if (!this.createEdgeStatus) {
+      this.handleAddEdge && this.handleAddEdge(edge)
     }
-    return cells
-  }
-  sidebarToGraph(
-    dragCell: typeMxCell,
-    x: number,
-    y: number,
-    target: typeMxCell
-  ) {
-    try {
-      const hasSource = dragCell.info.sourceId
-        ? this.findSourceCell(dragCell.info.sourceId)
-        : false
-      if (hasSource) {
-        message.error("重复使用引用数据")
-        return
-      }
-      dragCell.id = nanoid()
-      this.createVertexStatus = true
-      const cell = this.importCells([dragCell], x, y, target)
-      this.setSelectionCells(cell)
-      this.createVertexStatus = false
-      console.log(cell[0])
-      this.handleAddVertex && this.handleAddVertex(cell[0], x, y, target)
-    } finally {
-      this.getModel().endUpdate()
-    }
-  }
-  findSourceCell(id: string) {
-    const cells = this.getAllCells()
-    const cell = cells.find((ele) => ele.info && ele.info.sourceId === id)
-    return cell
-  }
-  deleteCells(cells: typeMxCell[]) {
-    if (cells.length > 0) {
-      for (let i = 0; i < cells.length; i++) {
-        const ele = cells[i]
-        let flag = true
-        if (this.beforeDeleteCell) {
-          flag = this.beforeDeleteCell(ele)
-        }
-        if (flag) {
-          this.removeCells([ele])
-          this.handleDeleteCell && this.handleDeleteCell(ele)
-        }
-      }
-    }
-  }
-  findById(id: string) {
-    const cells = this.getAllCells()
-    const cell = cells.find((ele) => ele.id === id)
-    return cell
+    return edge
   }
   moveCells(
     cells: typeMxCell[],
@@ -481,88 +437,93 @@ class MyGraph extends mxGraph {
     }
     if (!this.createVertexStatus) {
       cells.forEach((ele) => {
-        if (ele.vertex && this.handleSizeChange) {
-          const props = {
-            id: ele.id,
-            x: String(ele.geometry.x),
-            y: String(ele.geometry.y),
-            width: String(ele.geometry.width),
-            height: String(ele.geometry.height),
-          }
-          this.handleSizeChange(props)
-          // editNode({
-          //   id: ele.id,
-          //   x: String(ele.geometry.x),
-          //   y: String(ele.geometry.y),
-          // })
-        }
+        this.handleMoveCell && this.handleMoveCell(ele)
       })
     }
     return cells
   }
-  insertEdge(
-    parent: typeMxCell,
-    id: string | null,
-    value: any,
-    source: typeMxCell,
-    target: typeMxCell,
-    style?: string | undefined
-  ): typeMxCell {
-    let edge = this.createEdge(parent, id, value, source, target, style)
-    edge = this.addEdge(edge, parent, source, target)
-    if (!this.createEdgeStatus) {
-      this.handleAddEdge && this.handleAddEdge(edge)
-    }
-    return edge
+  findById(id: string | ((cell: typeMxCell) => boolean)) {
+    const cells = this.getAllCells()
+    const cell = cells.find((ele) => {
+      if (typeof id === "string") {
+        return ele.id === id
+      } else {
+        return id(ele)
+      }
+    })
+    return cell
   }
-  getShapeConstraints(cell: typeMxCell) {
-    const style = this.getCellStyle(cell)
-    if (style) {
-      const shape = this.cellRenderer.getShape(style.shape)
-      const constraints: typeMxConnectionConstraint[] = (shape as any).prototype
-        .constraints
-      return constraints
-    }
-  }
-  findConstranintIndex(x: number, y: number, cell: typeMxCell) {
-    const constraints = this.getShapeConstraints(cell)
-    if (constraints) {
-      for (let i = 0; i < constraints.length; i++) {
-        const constraint = constraints[i]
-        if (constraint.point.x === x && constraint.point.y === y) {
-          return i
+  getAllCells(): typeMxCell[] {
+    const cells: typeMxCell[] = []
+    for (const key in this.model.cells) {
+      if (Object.prototype.hasOwnProperty.call(this.model.cells, key)) {
+        const element = this.model.cells[key]
+        if (key !== "0" && key !== "1") {
+          cells.push(element)
         }
       }
     }
-    return -1
+    return cells
+  }
+  deleteCells(cells: typeMxCell[]) {
+    if (cells.length > 0) {
+      for (let i = 0; i < cells.length; i++) {
+        const ele = cells[i]
+        let flag = true
+        if (this.beforeDeleteCell) {
+          flag = this.beforeDeleteCell(ele)
+        }
+        if (flag) {
+          this.removeCells([ele])
+          this.handleDeleteCell && this.handleDeleteCell(ele)
+        }
+      }
+    }
+  }
+  insertEdgeByConfig(cfg: NodeConfig) {
+    const cell = this.insertEdge(
+      this.defaultParent,
+      cfg.id ? cfg.id : null,
+      cfg.value,
+      cfg.source as typeMxCell,
+      cfg.target as typeMxCell,
+      cfg.style
+    )
+    return cell
   }
   /**
-   * 节点是否可以拖动大小
-   * @param cell 节点
-   * @returns boolean
+   * 撤回和取消撤回的监听函数
    */
-  isCellResizable(cell: typeMxCell) {
-    console.log(cell.info.type)
-    if (cell.info.type === "combo") return true
-    return false
+  addUndoListener() {
+    const undo = this.actions.get("undo")
+    const redo = this.actions.get("redo")
+
+    const undoMgr = this.actions.undoManager
+
+    const undoListener = () => {
+      undo.setEnabled(this.canUndo())
+      redo.setEnabled(this.canRedo())
+    }
+
+    undoMgr.addListener(mxEvent.ADD, undoListener)
+    undoMgr.addListener(mxEvent.UNDO, undoListener)
+    undoMgr.addListener(mxEvent.REDO, undoListener)
+    undoMgr.addListener(mxEvent.CLEAR, undoListener)
+
+    // Updates the button states once
+    undoListener()
   }
-  getLineStyle(type: string) {
-    const styleConfig = this.lineStyle?.find(
-      (ele) => ele.shapeType === type
-    ) as Record<string, string>
-    let style = ""
-    if (styleConfig) {
-      const keys = Object.keys(styleConfig)
-      const values = Object.values(styleConfig)
-      keys.forEach((key, index) => {
-        if (key === "code") return
-        style += `${key}=${values[index]};`
-      })
-    }
-    return {
-      style,
-      code: styleConfig.code,
-    }
+  /**
+   * 是否可以撤回
+   */
+  canUndo() {
+    return this.isEditing() || this.actions.undoManager.canUndo()
+  }
+  /**
+   * 是否可以取消撤回
+   */
+  canRedo() {
+    return this.isEditing() || this.actions.undoManager.canRedo()
   }
 }
 
