@@ -33,6 +33,7 @@ import _ from 'lodash';
 import MyGraph from './graph'
 import { mxCell as TypeMxCell } from 'mxgraph'
 import { SidebarNode, NodeConfig, SidebarHTMLItem } from './type/type'
+import clone from 'lodash.clonedeep'
 
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
 
@@ -179,7 +180,7 @@ const makeDraggableAndHover = () => {
 }
 
 const handleItemMouseDown = (item: SidebarHTMLItem) => {
-  selectCell.value = _.cloneDeep(item.cell)
+  selectCell.value = clone(item.cell)
 }
 const previewSvg = ref<Node>()
 const previewTitle = ref<string>('')

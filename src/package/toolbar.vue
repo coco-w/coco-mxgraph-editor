@@ -1,6 +1,6 @@
 <template>
   
-    <div class="toolbar w-full border-b border-gray-100 shadow flex justify-start">
+    <div class="toolbar w-full border-b border-gray-100 shadow flex justify-start" :style="{'--img': img}">
       <div v-for="(item) in initToolbar"  :class="getToolbarItemClassName(item)" @click="handleToolbarItemClick(item)">
         <div :class="getToolbarClassName(item)"></div>
         <!-- <span>{{ graph?.actions.action[item].name }}</span> -->
@@ -20,8 +20,7 @@ const props = defineProps<{
   graph?: MyGraph
 }>()
 const initToolbar = ['undo', 'redo', 'zoomIn', 'zoomOut', 'delete']
-
-
+const img = (import.meta as any).env.DEV ? "url('./toolbar.png')" : `url(${new URL('./toolbar.png', import.meta.url).href})`
 
 const disabled = (key: string) => {
   return `toolbar_item w-6 cursor-pointer text-center leading-8 cursor-not-allowed opacity-50 ${key}`
@@ -71,36 +70,11 @@ const handleToolbarItemClick = (key: string) => {
   height: 24px;
   border-bottom: 1px solid #dadce0;
   user-select: none;
-  // background-color: #fff;
-  // position: absolute;
 }
-.toolbar_item {
-  // width: auto;
-  // height: 20px;
-  // float: left;
-  // margin: 2px;
-  // line-height: 20px;
-  // cursor: pointer;
-  // text-align: center;
-}
-
-// .toolbar_item:hover {
-//   background: #eee;
-//   border-radius: 2px;
-// }
-
-// .toolbar_item.disabled {
-//   opacity: 0.5;
-//   cursor: auto;
-// }
-
-// .toolbar_item.disabled:hover {
-//   background: none;
-//   border-radius: 0px;
-// }
-
 .toolbar_item  .toolbar_sprite {
-  background: url('/toolbar.png') no-repeat;
+  background-repeat: no-repeat;
+  background-image: var(--img);
+  // background: var(--img);
   height: 20px;
   display: inline-block;
   width: 20px;
