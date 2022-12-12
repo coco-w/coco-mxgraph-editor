@@ -8,7 +8,6 @@
   ],
   "module": "./dist/build.es.js",
   "main": "./dist/build.umd.js",
-  "type": "module",
   "types": "./dist/export.d.ts",
   "scripts": {
     "dev": "vite",
