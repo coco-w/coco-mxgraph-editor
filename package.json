@@ -1,0 +1,56 @@
+{
+  "name": "coco-mxgraph-editor",
+  "version": "0.0.53",
+  "private": false,
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
+  "module": "./dist/build.es.js",
+  "main": "./dist/build.umd.js",
+  "type": "module",
+  "types": "./dist/export.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "build:dts": "vue-dts-gen src/package/editor.vue"
+  },
+  "dependencies": {
+    "@typed-mxgraph/typed-mxgraph": "^1.0.7",
+    "ant-design-vue": "^3.2.15",
+    "less": "^4.1.3",
+    "lodash": "^4.17.21",
+    "mxgraph": "^4.2.2",
+    "nanoid": "^4.0.0",
+    "react-xml-parser": "^1.1.8",
+    "vue": "^3.2.41"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.11.11",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "sass": "^1.56.1",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3",
+    "vite-plugin-dts": "^1.7.1",
+    "vite-plugin-vue-type-imports": "^0.2.4",
+    "vue-dts-gen": "^0.3.0",
+    "vue-property-decorator": "^9.1.2",
+    "vue-tsc": "^1.0.9"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/build.es.js",
+      "require": "./dist/build.umd.js"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
+    }
+  },
+  "keywords": [
+    "vue3"
+  ]
+}
