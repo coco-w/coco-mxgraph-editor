@@ -1,6 +1,6 @@
 {
   "name": "coco-mxgraph-editor",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "private": false,
   "files": [
     "dist",
@@ -52,6 +52,16 @@
     }
   },
   "keywords": [
-    "vue3"
-  ]
+    "vue3",
+    "typescript",
+    "mxgraph",
+    "editor"
+  ],
+  "author": "coco-w",
+  "homepage": "https://github.com/coco-w/coco-mxgraph-editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coco-w/coco-mxgraph-editor"
+  },
+  "license": "MIT"
 }
