@@ -1,0 +1,51 @@
+{
+  "id": "3824025",
+  "name": "mxgraph",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "29392107",
+      "name": "zoom-out",
+      "font_class": "zoomOut",
+      "unicode": "e984",
+      "unicode_decimal": 59780
+    },
+    {
+      "icon_id": "29392110",
+      "name": "zoom-in",
+      "font_class": "zoomIn",
+      "unicode": "e985",
+      "unicode_decimal": 59781
+    },
+    {
+      "icon_id": "29391794",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e958",
+      "unicode_decimal": 59736
+    },
+    {
+      "icon_id": "27469026",
+      "name": "redo-circle",
+      "font_class": "refresh",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "27469030",
+      "name": "redo",
+      "font_class": "redo",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "27469032",
+      "name": "undo",
+      "font_class": "undo",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    }
+  ]
+}
