@@ -38,8 +38,9 @@ onMounted(() => {
     initToolbar.forEach((key, index) => {
       const action = props.graph?.actions.get(key)
       action?.addListener("stateChanged", () => {
+        console.log(action)
         const enabled = action.isEnabled()
-        const dom = document.querySelector(`.toolbar>.${key}`)
+        const dom = document.querySelector(`.mx-toolbar>.${key}`)
         if (dom) {
           if (enabled) {
             dom.className = normal(key)
