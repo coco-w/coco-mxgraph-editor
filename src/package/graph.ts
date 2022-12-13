@@ -122,8 +122,7 @@ class MyGraph extends mxGraph {
     // // 禁止从将label从线条上拖离
     mxGraph.prototype.edgeLabelsMovable = false
     // 样式
-    const style = new XMLParser().parseFromString(myStyle)
-    style.children.forEach((ele: any) => {
+    myStyle.children.forEach((ele: any) => {
       const node: { [k: string]: string } = {}
       ele.children.forEach((element: any) => {
         node[element.attributes.as] = element.attributes.value

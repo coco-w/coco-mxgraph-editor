@@ -11,7 +11,6 @@ specifiers:
   mxgraph: ^4.2.2
   nanoid: ^4.0.0
   postcss: ^8.4.20
-  react-xml-parser: ^1.1.8
   rollup-plugin-copy: ^3.4.0
   sass: ^1.56.1
   tailwindcss: ^3.2.4
@@ -30,7 +29,6 @@ dependencies:
   lodash.clonedeep: 4.5.0
   mxgraph: 4.2.2
   nanoid: 4.0.0
-  react-xml-parser: 1.1.8
   vue: 3.2.45
 
 devDependencies:
@@ -41,7 +39,7 @@ devDependencies:
   postcss: 8.4.20
   rollup-plugin-copy: 3.4.0
   sass: 1.56.1
-  tailwindcss: 3.2.4
+  tailwindcss: 3.2.4_postcss@8.4.20
   typescript: 4.9.4
   vite: 3.2.5_r5rdff334fdqljqxjxwwvmskwi
   vite-plugin-dts: 1.7.1_vite@3.2.5
@@ -1373,10 +1371,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /react-xml-parser/1.1.8:
-    resolution: {integrity: sha512-yX9k9LNCRzzNnFWoyo9cWEjtor6n6VD0Uh7z1ww5rIP6h5vdhJKEmowsm9RumEJMRdr7akcT4mMBScpsz573qQ==}
-    dev: false
-
   /read-cache/1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
     dependencies:
@@ -1514,10 +1508,12 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.2.4:
+  /tailwindcss/3.2.4_postcss@8.4.20:
     resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

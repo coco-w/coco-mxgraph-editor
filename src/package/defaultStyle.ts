@@ -1,101 +1,733 @@
-const default_style = `
-<mxStylesheet>
-	<add as="defaultVertex">
-		<add as="shape" value="label"/>
-		<add as="perimeter" value="rectanglePerimeter"/>
-		<add as="fontSize" value="12"/>
-		<add as="fontFamily" value="Helvetica"/>
-		<add as="align" value="center"/>
-		<add as="verticalAlign" value="middle"/>
-		<add as="fillColor" value="#ffffff"/>
-		<add as="strokeColor" value="#000000"/>
-		<add as="fontColor" value="#000000"/>
-	</add>
-	<add as="text">
-		<add as="fillColor" value="none"/>
-		<add as="gradientColor" value="none"/>
-		<add as="strokeColor" value="none"/>
-		<add as="align" value="left"/>
-		<add as="verticalAlign" value="top"/>
-	</add>
-	<add as="edgeLabel" extend="text">
-		<add as="labelBackgroundColor" value="#ffffff"/>
-		<add as="fontSize" value="11"/>
-	</add>
-	<add as="label">
-		<add as="fontStyle" value="1"/>
-		<add as="align" value="left"/>
-		<add as="verticalAlign" value="middle"/>
-		<add as="spacing" value="2"/>
-		<add as="spacingLeft" value="52"/>
-		<add as="imageWidth" value="42"/>
-		<add as="imageHeight" value="42"/>
-		<add as="rounded" value="1"/>
-	</add>
-	<add as="icon" extend="label">
-		<add as="align" value="center"/>
-		<add as="imageAlign" value="center"/>
-		<add as="verticalLabelPosition" value="bottom"/>
-		<add as="verticalAlign" value="top"/>
-		<add as="spacingTop" value="4"/>
-		<add as="labelBackgroundColor" value="#ffffff"/>
-		<add as="spacing" value="0"/>
-		<add as="spacingLeft" value="0"/>
-		<add as="spacingTop" value="6"/>
-		<add as="fontStyle" value="0"/>
-		<add as="imageWidth" value="48"/>
-		<add as="imageHeight" value="48"/>
-	</add>
-	<add as="swimlane">
-		<add as="shape" value="swimlane"/>
-		<add as="fontSize" value="12"/>
-		<add as="fontStyle" value="1"/>
-		<add as="startSize" value="23"/>
-	</add>
-	<add as="group">
-		<add as="verticalAlign" value="top"/>
-		<add as="fillColor" value="none"/>
-		<add as="strokeColor" value="none"/>
-		<add as="gradientColor" value="none"/>
-		<add as="pointerEvents" value="0"/>
-	</add>
-	<add as="ellipse">
-		<add as="shape" value="ellipse"/>
-		<add as="perimeter" value="ellipsePerimeter"/>
-	</add>
-	<add as="rhombus">
-		<add as="shape" value="rhombus"/>
-		<add as="perimeter" value="rhombusPerimeter"/>
-	</add>
-	<add as="triangle">
-		<add as="shape" value="triangle"/>
-		<add as="perimeter" value="trianglePerimeter"/>
-	</add>
-	<add as="line">
-		<add as="shape" value="line"/>
-		<add as="strokeWidth" value="4"/>
-		<add as="labelBackgroundColor" value="#ffffff"/>
-		<add as="verticalAlign" value="top"/>
-		<add as="spacingTop" value="8"/>
-	</add>
-	<add as="image">
-		<add as="shape" value="image"/>
-		<add as="labelBackgroundColor" value="white"/>
-		<add as="verticalAlign" value="top"/>
-		<add as="verticalLabelPosition" value="bottom"/>
-	</add>
-	<add as="roundImage" extend="image">
-		<add as="perimeter" value="ellipsePerimeter"/>
-	</add>
-	<add as="rhombusImage" extend="image">
-		<add as="perimeter" value="rhombusPerimeter"/>
-	</add>
-	<add as="arrow">
-		<add as="shape" value="arrow"/>
-		<add as="edgeStyle" value="none"/>
-		<add as="fillColor" value="#ffffff"/>
-	</add>
-</mxStylesheet>
-`
+const default_style = {
+  name: "mxStylesheet",
+  attributes: {},
+  children: [
+    {
+      name: "add",
+      attributes: {
+        as: "defaultVertex",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "label",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "rectanglePerimeter",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontSize",
+            value: "12",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontFamily",
+            value: "Helvetica",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "align",
+            value: "center",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "middle",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fillColor",
+            value: "#ffffff",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "strokeColor",
+            value: "#000000",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontColor",
+            value: "#000000",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "text",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "fillColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "gradientColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "strokeColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "align",
+            value: "left",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "top",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "edgeLabel",
+        extend: "text",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "labelBackgroundColor",
+            value: "#ffffff",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontSize",
+            value: "11",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "label",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "fontStyle",
+            value: "1",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "align",
+            value: "left",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "middle",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacing",
+            value: "2",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacingLeft",
+            value: "52",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "imageWidth",
+            value: "42",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "imageHeight",
+            value: "42",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "rounded",
+            value: "1",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "icon",
+        extend: "label",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "align",
+            value: "center",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "imageAlign",
+            value: "center",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalLabelPosition",
+            value: "bottom",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "top",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacingTop",
+            value: "4",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "labelBackgroundColor",
+            value: "#ffffff",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacing",
+            value: "0",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacingLeft",
+            value: "0",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacingTop",
+            value: "6",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontStyle",
+            value: "0",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "imageWidth",
+            value: "48",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "imageHeight",
+            value: "48",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "swimlane",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "swimlane",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontSize",
+            value: "12",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fontStyle",
+            value: "1",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "startSize",
+            value: "23",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "group",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "top",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fillColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "strokeColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "gradientColor",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "pointerEvents",
+            value: "0",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "ellipse",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "ellipse",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "ellipsePerimeter",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "rhombus",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "rhombus",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "rhombusPerimeter",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "triangle",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "triangle",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "trianglePerimeter",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "line",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "line",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "strokeWidth",
+            value: "4",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "labelBackgroundColor",
+            value: "#ffffff",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "top",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "spacingTop",
+            value: "8",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "image",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "image",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "labelBackgroundColor",
+            value: "white",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalAlign",
+            value: "top",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "verticalLabelPosition",
+            value: "bottom",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "roundImage",
+        extend: "image",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "ellipsePerimeter",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "rhombusImage",
+        extend: "image",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "perimeter",
+            value: "rhombusPerimeter",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+    {
+      name: "add",
+      attributes: {
+        as: "arrow",
+      },
+      children: [
+        {
+          name: "add",
+          attributes: {
+            as: "shape",
+            value: "arrow",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "edgeStyle",
+            value: "none",
+          },
+          children: [],
+          value: "",
+        },
+        {
+          name: "add",
+          attributes: {
+            as: "fillColor",
+            value: "#ffffff",
+          },
+          children: [],
+          value: "",
+        },
+      ],
+      value: "",
+    },
+  ],
+  value: "",
+}
 
 export default default_style
