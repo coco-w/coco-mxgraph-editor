@@ -1,24 +1,37 @@
 # mxgraph editor
-基于mxgraph，vue3，typescript的editor组件
+
+基于 mxgraph，vue3，typescript 的 editor 组件
 
 ## props
 
 ### sidebarNodes
+
 `SidebarItem[]`
 出现在侧边栏的节点
+
 ```ts
 interface SidebarItem {
   name: string
   style: string
-  type: 'edge'|'vertex'
+  type: 'edge' | 'vertex'
   width: number
   height: number
   info?: Record<string, any>
 }
 ```
 
+### hideSidebar
+
+隐藏侧边栏
+
+```ts
+boolean
+```
+
 ### handleAddVertex?
-添加vertex节点触发
+
+添加 vertex 节点触发
+
 ```ts
 (
   cell: mxCell,
@@ -27,28 +40,43 @@ interface SidebarItem {
   target: mxCell
 ) => void
 ```
+
 ### handleDeleteCell?
+
 删除节点触发
+
 ```ts
 (cell: mxCell) => void
 ```
-###   handleAddEdge?
-添加edge节点触发
+
+### handleAddEdge?
+
+添加 edge 节点触发
+
 ```ts
 (cell: mxCell) => void
 ```
-###  handleMoveCell?
+
+### handleMoveCell?
+
 移动节点触发
+
 ```ts
 (cell: mxCell) => void
 ```
-###  cellRightClick?
+
+### cellRightClick?
+
 自定义侧边栏
-``` ts
+
+```ts
 (cells: mxCell[], menu: mxPopupMenuHandler) => void
 ```
+
 ### beforeDeleteCell?
+
 删除节点前触发，返回`false`不会触发删除
+
 ```ts
-(cell: mxCell) => boolean
+;(cell: mxCell) => boolean
 ```
