@@ -37,7 +37,12 @@ import mx from './factory'
 import _ from 'lodash'
 import MyGraph from './graph'
 import { mxCell as TypeMxCell } from 'mxgraph'
-import { SidebarNode, NodeConfig, SidebarHTMLItem } from './type/type'
+import {
+  SidebarNode,
+  NodeConfig,
+  SidebarHTMLItem,
+  SidebarProps
+} from './type/type'
 import clone from 'lodash.clonedeep'
 
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
@@ -51,10 +56,7 @@ const itemWidth = 32
 const itemHeight = 30
 //判断是否初始化过
 const makeDragPanels: string[] = ['1']
-const props = defineProps<{
-  graph?: MyGraph
-  nodes: SidebarNode[]
-}>()
+const props = defineProps<SidebarProps>()
 const emits = defineEmits<{
   (e: 'changeEdge', node: TypeMxCell, id: string): void
 }>()

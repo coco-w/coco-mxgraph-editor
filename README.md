@@ -28,6 +28,16 @@ interface SidebarItem {
 boolean
 ```
 
+### toolbar
+
+自定义 toolbar
+
+```ts
+string[]
+//默认值
+// ['undo', 'redo', 'zoomIn', 'zoomOut', 'delete']
+```
+
 ### handleAddVertex?
 
 添加 vertex 节点触发

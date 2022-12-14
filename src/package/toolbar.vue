@@ -3,7 +3,7 @@
     class="mx-toolbar w-full border-b border-gray-100 shadow flex justify-start"
   >
     <div
-      v-for="item in initToolbar"
+      v-for="item in toolbar"
       :class="getToolbarItemClassName(item)"
       @click="handleToolbarItemClick(item)"
     >
@@ -14,18 +14,17 @@
 </template>
 <script lang="ts">
 export default {
-  name: "Toolbar",
+  name: 'Toolbar'
 }
 </script>
 <script setup lang="ts">
-import { nextTick, onMounted } from "vue"
-import MyGraph from "./graph"
-import "../assets/icons/iconfont.css"
+import { nextTick, onMounted, ref } from 'vue'
+import MyGraph from './graph'
+import '../assets/icons/iconfont.css'
+import { ToolbarProps } from './type/type'
 
-const props = defineProps<{
-  graph?: MyGraph
-}>()
-const initToolbar = ["undo", "redo", "zoomIn", "zoomOut", "delete"]
+const props = defineProps<ToolbarProps>()
+const toolbar = ref<string[]>(['undo', 'redo', 'zoomIn', 'zoomOut', 'delete'])
 
 const disabled = (key: string) => {
   return `toolbar_item w-6 cursor-pointer text-center leading-8 cursor-not-allowed opacity-50 ${key}`
@@ -35,9 +34,10 @@ const normal = (key: string) => {
 }
 onMounted(() => {
   nextTick(() => {
-    initToolbar.forEach((key, index) => {
+    if (props.toolbar) toolbar.value = props.toolbar
+    toolbar.value.forEach((key, index) => {
       const action = props.graph?.actions.get(key)
-      action?.addListener("stateChanged", () => {
+      action?.addListener('stateChanged', () => {
         console.log(action)
         const enabled = action.isEnabled()
         const dom = document.querySelector(`.mx-toolbar>.${key}`)

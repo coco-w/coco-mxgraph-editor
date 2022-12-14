@@ -9,7 +9,7 @@
     </div>
     <div class="flex-1">
       <!-- <div class="toolbar w-full border-b border-gray-100 shadow"></div> -->
-      <Toolbar :graph="graph" />
+      <Toolbar :graph="graph" :toolbar="toolbar" />
       <div class="editor-container w-full">
         <div></div>
       </div>
@@ -29,22 +29,8 @@ import MyGraph from './graph'
 import SiderbarVue from './siderbar.vue'
 import Toolbar from './toolbar.vue'
 import '../index.css'
-import { DrawInstance, SidebarNode } from './type/type'
-const props = defineProps<{
-  nodes: SidebarNode[]
-  hideSidebar?: boolean
-  handleAddVertex?: (
-    cell: typeMxCell,
-    x: number,
-    y: number,
-    target: typeMxCell
-  ) => void
-  handleDeleteCell?: (cell: typeMxCell) => void
-  handleAddEdge?: (cell: typeMxCell) => void
-  handleMoveCell?: (cell: typeMxCell) => void
-  cellRightClick?: (cells: typeMxCell[], menu: mxPopupMenuHandler) => void
-  beforeDeleteCell?: (cell: typeMxCell) => boolean
-}>()
+import { DrawInstance, DrawProps, SidebarNode } from './type/type'
+const props = defineProps<DrawProps>()
 const graph = shallowRef<MyGraph>()
 onMounted(() => {
   const editor = new mx.mxEditor()
