@@ -4,14 +4,17 @@
 ## props
 
 ### sidebarNodes
+`SidebarItem[]`
 出现在侧边栏的节点
 ```ts
-name: string
-style: string
-type: 'edge'|'vertex'
-width: number
-height: number
-info?: Record<string, any>
+interface SidebarItem {
+  name: string
+  style: string
+  type: 'edge'|'vertex'
+  width: number
+  height: number
+  info?: Record<string, any>
+}
 ```
 
 ### handleAddVertex?
