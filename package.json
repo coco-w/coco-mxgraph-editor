@@ -16,18 +16,18 @@
     "build:dts": "vue-dts-gen src/package/editor.vue"
   },
   "dependencies": {
-    "@typed-mxgraph/typed-mxgraph": "^1.0.7",
-    "less": "^4.1.3",
     "lodash.clonedeep": "^4.5.0",
     "mxgraph": "^4.2.2",
     "nanoid": "^4.0.0",
     "vue": "^3.2.41"
   },
   "devDependencies": {
+    "@typed-mxgraph/typed-mxgraph": "^1.0.7",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.11",
     "@vitejs/plugin-vue": "^3.2.0",
     "autoprefixer": "^10.4.13",
+    "less": "^4.1.3",
     "postcss": "^8.4.20",
     "rollup-plugin-copy": "^3.4.0",
     "sass": "^1.56.1",

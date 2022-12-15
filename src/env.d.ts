@@ -1,4 +1,3 @@
-declare module 'react-xml-parser'
 declare module 'lodash.clonedeep'
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'

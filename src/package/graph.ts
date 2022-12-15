@@ -5,7 +5,6 @@ import {
   mxEventObject as typeMxEventObject,
 } from "mxgraph"
 import { Action } from "./actions"
-import XMLParser from "react-xml-parser"
 import myStyle from "./defaultStyle"
 import { nanoid } from "nanoid"
 import { ctrlKey, keyCode } from "./defaultConfig"
