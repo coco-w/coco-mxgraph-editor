@@ -1,9 +1,16 @@
 <template>
   <div class="sidebar shadow-sm relative overflow-auto">
     <div id="sidebar_graph_container" class="overflow-auto"></div>
-    <div v-for="(item, index) in htmls" :key="index" class="sidebar_item cursor-pointer flex p-2 justify-start align-middle hover:bg-gray-300" :ref="getSidebarRef"
-      :data-realWidth="item.width" :data-realHeight="item.height" :data-type="item.cell.isVertex()"
-      @mousedown="handleItemMouseDown(item)">
+    <div
+      v-for="(item, index) in htmls"
+      :key="index"
+      class="sidebar_item cursor-pointer flex p-2 justify-start align-middle hover:bg-gray-300"
+      :ref="getSidebarRef"
+      :data-realWidth="item.width"
+      :data-realHeight="item.height"
+      :data-type="item.cell.isVertex()"
+      @mousedown="handleItemMouseDown(item)"
+    >
       <div class="w-12 h-8" v-html="item.html"></div>
       <span class="truncate leading-8" :title="item.code">{{ item.code }}</span>
     </div>
@@ -13,26 +20,29 @@
           </div>
           <div class="sidebar_preview_title">{{ previewTitle }}</div>
         </div> -->
-    <slot name="sidebar">
-
-    </slot>
+    <slot name="sidebar"> </slot>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: "Sidebar",
+  name: 'Sidebar'
 }
 </script>
 <script setup lang="ts">
 import { ref, onMounted, nextTick, Ref, inject, shallowRef } from 'vue'
 // import { mxGraph, mxCell } from 'mxgraph'
-import mx from './factory';
+import mx from './factory'
 // import { NodeObj } from './type'
-import _ from 'lodash';
+import _ from 'lodash'
 import MyGraph from './graph'
 import { mxCell as TypeMxCell } from 'mxgraph'
-import { SidebarNode, NodeConfig, SidebarHTMLItem } from './type/type'
+import {
+  SidebarNode,
+  NodeConfig,
+  SidebarHTMLItem,
+  SidebarProps
+} from './type/type'
 import clone from 'lodash.clonedeep'
 
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
@@ -46,16 +56,16 @@ const itemWidth = 32
 const itemHeight = 30
 //判断是否初始化过
 const makeDragPanels: string[] = ['1']
-const props = defineProps<{
-  graph?: MyGraph
-  nodes: SidebarNode[]
-}>()
+const props = defineProps<SidebarProps>()
 const emits = defineEmits<{
   (e: 'changeEdge', node: TypeMxCell, id: string): void
 }>()
 const selectCell = shallowRef<TypeMxCell>()
 onMounted(() => {
-  graph.value = new MyGraph(document.querySelector('#sidebar_graph_container') as HTMLElement)
+  if (props.nodes.length === 0) return
+  graph.value = new MyGraph(
+    document.querySelector('#sidebar_graph_container') as HTMLElement
+  )
   graph.value?._setDefaultConfig()
   loadNodes()
   nextTick(() => {
@@ -85,7 +95,7 @@ const loadNodes = () => {
           width,
           height,
           cell: cell,
-          code: ele.name,
+          code: ele.name
         })
       }
     } else if (ele.type === 'edge') {
@@ -101,11 +111,10 @@ const loadNodes = () => {
         style: ele.style,
         type: 'edge',
         info: {},
-        value: '',
+        value: ''
       }
       const cell = graph.value?.insertEdgeByConfig(edge)
       if (cell) {
-
         cell.geometry.sourcePoint = new mxPoint(0, 0)
         cell.geometry.targetPoint = new mxPoint(100, 0)
         const html = createItem([cell], ele.name, 200, 100)
@@ -114,7 +123,7 @@ const loadNodes = () => {
           width: 200,
           height: 100,
           cell: cell,
-          code: ele.name,
+          code: ele.name
         })
       }
     }
@@ -125,8 +134,8 @@ const getSidebarRef = (ele: any) => {
 }
 
 const getTextWidth = (text: string, font: string) => {
-  var canvas = document.createElement("canvas")
-  var context = canvas.getContext("2d") as CanvasRenderingContext2D
+  var canvas = document.createElement('canvas')
+  var context = canvas.getContext('2d') as CanvasRenderingContext2D
   context.font = font
   var metrics = context.measureText(text)
   return metrics.width
@@ -134,17 +143,34 @@ const getTextWidth = (text: string, font: string) => {
 const previewNodeData = new Map<string, Node>()
 const previewWidth = new Map<string, number>()
 const previewHeight = new Map<string, number>()
-const createItem = (cells: TypeMxCell[], title: string, realWidth: number, realHeight: number,) => {
+const createItem = (
+  cells: TypeMxCell[],
+  title: string,
+  realWidth: number,
+  realHeight: number
+) => {
   if (!graph.value) return
   graph.value.view.scaleAndTranslate(1, 0, 0)
   const parent = graph.value.getDefaultParent()
   graph.value.addCells(cells, parent)
   const bounds = graph.value.getGraphBounds()
-  const s = Math.floor(Math.min((itemWidth - 2 * thumbBorder) / bounds.width, (itemHeight - 2 * thumbBorder) / bounds.height) * 100) / 100
+  const s =
+    Math.floor(
+      Math.min(
+        (itemWidth - 2 * thumbBorder) / bounds.width,
+        (itemHeight - 2 * thumbBorder) / bounds.height
+      ) * 100
+    ) / 100
   //调整为合理的缩放比例
-  graph.value.view.scaleAndTranslate(s, Math.floor((itemWidth - bounds.width * s) / 2 / s - bounds.x), Math.floor((itemHeight - bounds.height * s) / 2 / s - bounds.y))
+  graph.value.view.scaleAndTranslate(
+    s,
+    Math.floor((itemWidth - bounds.width * s) / 2 / s - bounds.x),
+    Math.floor((itemHeight - bounds.height * s) / 2 / s - bounds.y)
+  )
   // 复制svg node
-  const node = (graph.value.view.getCanvas().ownerSVGElement as SVGSVGElement).cloneNode(true)
+  const node = (
+    graph.value.view.getCanvas().ownerSVGElement as SVGSVGElement
+  ).cloneNode(true)
   //计算合理的preview的大小
   const w = getTextWidth(title, '16px 宋体') + 20
   const previewWrapperWidth = w > realWidth ? w + 20 : realWidth + 20
@@ -152,15 +178,36 @@ const createItem = (cells: TypeMxCell[], title: string, realWidth: number, realH
   previewHeight.set(title, previewWrapperHeight)
   previewWidth.set(title, previewWrapperWidth)
   //获取预览的svg element
-  const t = Math.floor(Math.min((previewWrapperWidth - 2 * thumbBorder) / bounds.width, (previewWrapperHeight - 2 * thumbBorder) / bounds.height) * 100) / 100
-  graph.value.view.scaleAndTranslate(t, Math.floor((previewWrapperWidth - bounds.width * t) / 2 / t - bounds.x), Math.floor((previewWrapperHeight - bounds.height * t) / 2 / t - bounds.y))
+  const t =
+    Math.floor(
+      Math.min(
+        (previewWrapperWidth - 2 * thumbBorder) / bounds.width,
+        (previewWrapperHeight - 2 * thumbBorder) / bounds.height
+      ) * 100
+    ) / 100
+  graph.value.view.scaleAndTranslate(
+    t,
+    Math.floor((previewWrapperWidth - bounds.width * t) / 2 / t - bounds.x),
+    Math.floor((previewWrapperHeight - bounds.height * t) / 2 / t - bounds.y)
+  )
 
-  previewNodeData.set(title, (graph.value.view.getCanvas().ownerSVGElement as SVGSVGElement).cloneNode(true))
+  previewNodeData.set(
+    title,
+    (graph.value.view.getCanvas().ownerSVGElement as SVGSVGElement).cloneNode(
+      true
+    )
+  )
   // 清空graph容器
   graph.value.getModel().clear()
   return (node as HTMLElement).outerHTML
 }
-const dropSuccessCb = function (_graph: MyGraph, evt: any, target: TypeMxCell, x: number, y: number) {
+const dropSuccessCb = function (
+  _graph: MyGraph,
+  evt: any,
+  target: TypeMxCell,
+  x: number,
+  y: number
+) {
   if (selectCell.value) {
     props.graph?.sidebarToGraph(selectCell.value, x, y, target)
   }
@@ -170,12 +217,21 @@ const makeDraggableAndHover = () => {
   const doms = document.querySelectorAll('.sidebar_item')
   doms.forEach((ele) => {
     const dragElt = document.createElement('div')
-    const width = ele.getAttribute("data-realwidth")
-    const height = ele.getAttribute("data-realheight")
+    const width = ele.getAttribute('data-realwidth')
+    const height = ele.getAttribute('data-realheight')
     dragElt.style.width = `${width}px`
     dragElt.style.height = `${height}px`
     dragElt.style.border = '1px dashed #000'
-    mxUtils.makeDraggable(ele as HTMLElement, props.graph as MyGraph, dropSuccessCb, dragElt, undefined, undefined, undefined, true)
+    mxUtils.makeDraggable(
+      ele as HTMLElement,
+      props.graph as MyGraph,
+      dropSuccessCb,
+      dragElt,
+      undefined,
+      undefined,
+      undefined,
+      true
+    )
   })
 }
 
@@ -190,7 +246,9 @@ const handleItemHover = (item: SidebarHTMLItem, e: MouseEvent) => {
   const width = previewWidth.get(name)
   const height = previewHeight.get(name)
   const svgWrapper = document.querySelector('.svg_wrapper') as HTMLElement
-  const previewWrapper = document.querySelector('.sidebar_preview_svg') as HTMLElement
+  const previewWrapper = document.querySelector(
+    '.sidebar_preview_svg'
+  ) as HTMLElement
   previewWrapper.style.display = 'block'
   previewWrapper.style.width = `${width}px`
   previewWrapper.style.height = `${height}px`
@@ -200,7 +258,9 @@ const handleItemHover = (item: SidebarHTMLItem, e: MouseEvent) => {
 }
 const clearPreviewSvg = () => {
   previewTitle.value = ''
-  const previewWrapper = document.querySelector('.sidebar_preview_svg') as HTMLElement
+  const previewWrapper = document.querySelector(
+    '.sidebar_preview_svg'
+  ) as HTMLElement
   previewWrapper.style.display = 'none'
 }
 const hadnleItemMouseLeave = () => {
@@ -209,7 +269,6 @@ const hadnleItemMouseLeave = () => {
 const hadnleCollaspeChange = (key: string) => {
   if (!makeDragPanels.includes(key)) {
     makeDragPanels.push(key)
-    
   }
 }
 const activeKey = ref<string>('1')
@@ -330,14 +389,11 @@ const activeKey = ref<string>('1')
     }
 
     .ant-collapse-content {
-
       .ant-collapse-content-box {
         padding: 5px;
         background-color: #fff;
       }
     }
   }
-
-
 }
 </style>
