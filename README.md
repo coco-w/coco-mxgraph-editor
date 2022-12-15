@@ -2,6 +2,16 @@
 
 基于 mxgraph，vue3，typescript 的 editor 组件
 
+```ts
+<template>
+  <MyDraw :nodes="[]" />
+</template>
+<script setup lang="ts">
+  import { MyDraw } from "coco-mxgraph-editor"
+  import "coco-mxgraph-editor/dist/style.css"
+</script>
+```
+
 ## props
 
 ### sidebarNodes
