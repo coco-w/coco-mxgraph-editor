@@ -1,16 +1,16 @@
 <template>
-  <div class="draw h-full w-full flex">
-    <div class="sider-wrapper h-full" style="width: 200px" v-if="!hideSidebar">
+  <div class="flex w-full h-full draw">
+    <div class="h-full sider-wrapper" style="width: 200px" v-if="!hideSidebar">
       <SiderbarVue :nodes="props.nodes" :graph="graph">
         <template #sidebar>
           <slot name="sidebar"></slot>
         </template>
       </SiderbarVue>
     </div>
-    <div class="flex-1">
-      <!-- <div class="toolbar w-full border-b border-gray-100 shadow"></div> -->
+    <div class="flex flex-col flex-1">
+      <!-- <div class="w-full border-b border-gray-100 shadow toolbar"></div> -->
       <Toolbar :graph="graph" :toolbar="toolbar" />
-      <div class="editor-container w-full">
+      <div class="flex-1 w-full editor-container">
         <div></div>
       </div>
     </div>
