@@ -1,10 +1,10 @@
 <template>
-  <div class="sidebar shadow-sm relative overflow-auto">
+  <div class="relative overflow-auto shadow-sm sidebar">
     <div id="sidebar_graph_container" class="overflow-auto"></div>
     <div
       v-for="(item, index) in htmls"
       :key="index"
-      class="sidebar_item cursor-pointer flex p-2 justify-start align-middle hover:bg-gray-300"
+      class="flex justify-start p-2 align-middle cursor-pointer sidebar_item hover:bg-gray-300"
       :ref="getSidebarRef"
       :data-realWidth="item.width"
       :data-realHeight="item.height"
@@ -12,7 +12,7 @@
       @mousedown="handleItemMouseDown(item)"
     >
       <div class="w-12 h-8" v-html="item.html"></div>
-      <span class="truncate leading-8" :title="item.code">{{ item.code }}</span>
+      <span class="leading-8 truncate" :title="item.code">{{ item.code }}</span>
     </div>
     <!-- <div class="sidebar_preview">
           <div class="sidebar_preview_svg">
@@ -30,7 +30,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import { ref, onMounted, nextTick, Ref, inject, shallowRef } from 'vue'
+import { ref, onMounted, nextTick, Ref, inject, shallowRef, watch } from 'vue'
 // import { mxGraph, mxCell } from 'mxgraph'
 import mx from './factory'
 // import { NodeObj } from './type'
@@ -62,18 +62,23 @@ const emits = defineEmits<{
 }>()
 const selectCell = shallowRef<TypeMxCell>()
 onMounted(() => {
-  if (props.nodes.length === 0) return
   graph.value = new MyGraph(
     document.querySelector('#sidebar_graph_container') as HTMLElement
   )
   graph.value?._setDefaultConfig()
+  if (props.nodes.length === 0) return
   loadNodes()
-  nextTick(() => {
-    makeDraggableAndHover()
-  })
 })
 
+watch(
+  () => props.nodes,
+  () => {
+    loadNodes()
+  }
+)
+
 const loadNodes = () => {
+  htmls.value = []
   props.nodes.forEach((ele, index) => {
     if (ele.type === 'vertex') {
       const { height, width } = ele
@@ -127,6 +132,9 @@ const loadNodes = () => {
         })
       }
     }
+  })
+  nextTick(() => {
+    makeDraggableAndHover()
   })
 }
 const getSidebarRef = (ele: any) => {

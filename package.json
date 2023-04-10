@@ -1,6 +1,6 @@
 {
   "name": "coco-mxgraph-editor",
-  "version": "0.0.7",
+  "version": "0.0.71",
   "private": false,
   "files": [
     "dist",
