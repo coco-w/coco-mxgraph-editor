@@ -1,6 +1,6 @@
 import factory, { mxCell } from 'mxgraph'
 import MyGraph from './graph'
-// const mx = 
+// const mx =
 declare global {
   interface Window {
     mxBasePath: string
@@ -62,7 +62,7 @@ mx.mxConnectionHandler.prototype.originConnect = function (
     // the default parent to insert the edge
     var model = this.graph.getModel()
     var terminalInserted = false
-    var edge: mxCell = new mxCell()
+    var edge: mxCell = new mx.mxCell()
 
     model.beginUpdate()
     try {
@@ -119,14 +119,14 @@ mx.mxConnectionHandler.prototype.originConnect = function (
       // Uses the value of the preview edge state for inserting
       // the new edge into the graph
       var value = null
-      var style = ""
+      var style = ''
 
       if (this.edgeState != null) {
         value = this.edgeState.cell.value
         style = this.edgeState.cell.style
       }
 
-      edge = this.insertEdge(parent, "", value, source, target, style as string)
+      edge = this.insertEdge(parent, '', value, source, target, style as string)
 
       if (edge != null) {
         // Updates the connection constraints
@@ -212,18 +212,18 @@ mx.mxConnectionHandler.prototype.originConnect = function (
         this.fireEvent(
           new mx.mxEventObject(
             mx.mxEvent.CONNECT,
-            "cell",
+            'cell',
             edge,
-            "terminal",
+            'terminal',
             target,
-            "event",
+            'event',
             evt,
-            "target",
+            'target',
             dropTarget,
-            "terminalInserted",
+            'terminalInserted',
             terminalInserted
           ),
-          ""
+          ''
         )
       }
     } catch (e) {
@@ -234,7 +234,10 @@ mx.mxConnectionHandler.prototype.originConnect = function (
     }
 
     if (this.select) {
-      this.selectCells(edge as mxCell, terminalInserted ? target : null as unknown as mxCell)
+      this.selectCells(
+        edge as mxCell,
+        terminalInserted ? target : (null as unknown as mxCell)
+      )
     }
   }
 }

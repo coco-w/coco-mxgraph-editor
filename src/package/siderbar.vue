@@ -282,7 +282,7 @@ const hadnleCollaspeChange = (key: string) => {
 const activeKey = ref<string>('1')
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .sidebar {
   width: 100%;
   height: 100%;

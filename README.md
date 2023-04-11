@@ -98,5 +98,17 @@ string[]
 删除节点前触发，返回`false`不会触发删除
 
 ```ts
-;(cell: mxCell) => boolean
+(cell: mxCell) => boolean
+```
+
+## 连接规则
+```ts
+mx.mxConnectionHandler.prototype.connect = function (
+  source: mxCell,
+  target: mxCell,
+  evt: MouseEvent,
+  dropTarget: mxCell
+) {
+  this.originConnect.apply(this, arguments as any)
+}
 ```

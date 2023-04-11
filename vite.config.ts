@@ -7,13 +7,14 @@ import VueTypeImports from 'vite-plugin-vue-type-imports'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),VueTypeImports(), dts()],
+  plugins: [vue(), VueTypeImports(), dts()],
   build: {
     lib: {
       entry: path.resolve(__dirname, './export.ts'),
       name: 'vue3-text-vue',
       fileName: (format) => `build.${format}.js`
     },
+    sourcemap: true,
     rollupOptions: {
       // 确保外部化处理那些你不想打包进库的依赖
       external: ['vue'],
@@ -22,8 +23,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue'
         }
-      },
-      
+      }
     }
   }
 })

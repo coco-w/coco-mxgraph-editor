@@ -53,7 +53,7 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .draw {
   .toolbar {
     @apply h-8;
