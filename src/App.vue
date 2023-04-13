@@ -1,6 +1,6 @@
 <template>
   <div>
-    <drawVue :nodes="nodes" :toolbar="['undo', 'redo']">
+    <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
       <template #sidebar>asdasdasd</template>
     </drawVue>
   </div>

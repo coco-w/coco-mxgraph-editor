@@ -11,7 +11,7 @@
       <!-- <div class="w-full border-b border-gray-100 shadow toolbar"></div> -->
       <Toolbar :graph="graph" :toolbar="toolbar" />
       <div class="flex-1 w-full editor-container">
-        <div></div>
+        <div class="editor-outline"></div>
       </div>
     </div>
   </div>
@@ -47,6 +47,14 @@ onMounted(() => {
   graph.value.beforeDeleteCell = props.beforeDeleteCell
   graph.value._init()
   window.graph = unref(graph.value)
+
+  //鸟瞰图
+  if (props.outlineMap) {
+    new mx.mxOutline(
+      graph.value,
+      document.querySelector('.editor-outline') as HTMLElement
+    )
+  }
 })
 defineExpose({
   graph: graph
@@ -55,8 +63,12 @@ defineExpose({
 
 <style lang="scss">
 .draw {
+  @apply relative;
   .toolbar {
     @apply h-8;
+  }
+  .editor-outline {
+    @apply absolute top-0 right-2 w-48 h-32 bg-white shadow border;
   }
 }
 
