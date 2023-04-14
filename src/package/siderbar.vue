@@ -77,8 +77,9 @@ watch(
   }
 )
 
-const loadNodes = () => {
+const loadNodes = async () => {
   htmls.value = []
+  await nextTick()
   props.nodes.forEach((ele, index) => {
     if (ele.type === 'vertex') {
       const { height, width } = ele

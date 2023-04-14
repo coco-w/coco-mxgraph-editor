@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button @click="handleTest">asd</button>
     <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
       <template #sidebar>asdasdasd</template>
     </drawVue>
@@ -45,6 +46,30 @@ onMounted(() => {
     }
   ]
 })
+
+const handleTest = () => {
+  nodes.value = [
+    {
+      name: '11111',
+      style:
+        'shape=folder;rounded=0;tabPosition=left;editable=0;type=能力域;tagColor=#0077b6;',
+      type: 'vertex',
+      width: 120,
+      height: 80,
+      info: {
+        name: '11111',
+        nodeType: 'ability_field'
+      }
+    },
+    {
+      name: '222222',
+      style: 'rounded=1;',
+      type: 'vertex',
+      width: 100,
+      height: 100
+    }
+  ]
+}
 </script>
 
 <style scoped></style>
