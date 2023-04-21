@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="handleTest">asd</button>
     <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
       <template #sidebar>asdasdasd</template>
     </drawVue>
@@ -13,6 +12,7 @@ import { onMounted, ref } from 'vue'
 import drawVue from './package/draw.vue'
 import mx from './package/factory'
 import { SidebarNode } from './package/type/type'
+import './shape'
 const nodes = ref<SidebarNode[]>([])
 mx.mxConnectionHandler.prototype.connect = function (
   source: mxCell,
@@ -26,12 +26,12 @@ mx.mxConnectionHandler.prototype.connect = function (
 onMounted(() => {
   nodes.value = [
     {
-      name: '能力域',
-      style:
-        'shape=folder;rounded=0;tabPosition=left;editable=0;type=能力域;tagColor=#0077b6;',
+      name: '能力域123',
+      style: 'shape=rectangle;',
+      value: '111',
       type: 'vertex',
-      width: 120,
-      height: 80,
+      width: 180,
+      height: 180,
       info: {
         name: '能力域',
         nodeType: 'ability_field'
@@ -46,30 +46,6 @@ onMounted(() => {
     }
   ]
 })
-
-const handleTest = () => {
-  nodes.value = [
-    {
-      name: '11111',
-      style:
-        'shape=folder;rounded=0;tabPosition=left;editable=0;type=能力域;tagColor=#0077b6;',
-      type: 'vertex',
-      width: 120,
-      height: 80,
-      info: {
-        name: '11111',
-        nodeType: 'ability_field'
-      }
-    },
-    {
-      name: '222222',
-      style: 'rounded=1;',
-      type: 'vertex',
-      width: 100,
-      height: 100
-    }
-  ]
-}
 </script>
 
 <style scoped></style>

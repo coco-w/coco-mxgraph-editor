@@ -13,6 +13,7 @@ export interface NodeConfig extends Record<string, any> {
   parentId?: string
   source?: mxCell
   target?: mxCell
+  value?: string
 }
 
 export interface SidebarNode {
@@ -21,6 +22,7 @@ export interface SidebarNode {
   type: ItemType
   width: number
   height: number
+  value?: string
   info?: Record<string, any>
   // nodeId?: string
 }

@@ -91,7 +91,8 @@ const loadNodes = async () => {
         y: 0,
         style: ele.style,
         type: 'vertex',
-        info: ele.info
+        info: ele.info,
+        value: ele.value
       }
       const cell = graph.value?.insertVertetByConfig(node)
       if (cell) {

@@ -1,15 +1,15 @@
-import mx from "./factory"
+import mx from './factory'
 import {
   mxCell as typeMxCell,
   mxPopupMenuHandler,
-  mxEventObject as typeMxEventObject,
-} from "mxgraph"
-import { Action } from "./actions"
-import myStyle from "./defaultStyle"
-import { nanoid } from "nanoid"
-import { ctrlKey, keyCode } from "./defaultConfig"
-import { isProxy } from "vue"
-import { NodeConfig } from "./type/type"
+  mxEventObject as typeMxEventObject
+} from 'mxgraph'
+import { Action } from './actions'
+import myStyle from './defaultStyle'
+import { nanoid } from 'nanoid'
+import { ctrlKey, keyCode } from './defaultConfig'
+import { isProxy } from 'vue'
+import { NodeConfig } from './type/type'
 const {
   mxGraph,
   mxRubberband,
@@ -24,11 +24,11 @@ const {
   mxCellState,
   mxShape,
   mxPoint,
-  mxConnectionConstraint,
+  mxConnectionConstraint
 } = mx
 
 class MyGraph extends mxGraph {
-  gridColor: string = "#d0d0d0"
+  gridColor: string = '#d0d0d0'
   showGrid: boolean = true
   rubberband = new mxRubberband(this)
   keyHandler = new mxKeyHandler(this)
@@ -133,20 +133,20 @@ class MyGraph extends mxGraph {
     const style = this.getStylesheet().getDefaultEdgeStyle()
     Object.assign(style, {
       // [mxConstants.STYLE_ROUNDED]: true, // 设置线条拐弯处为圆角
-      [mxConstants.STYLE_STROKEWIDTH]: "2",
-      [mxConstants.STYLE_STROKECOLOR]: "#333333",
+      [mxConstants.STYLE_STROKEWIDTH]: '2',
+      [mxConstants.STYLE_STROKECOLOR]: '#333333',
       // [mxConstants.STYLE_EDGE]: mxConstants.EDGESTYLE_ORTHOGONAL,
-      [mxConstants.STYLE_FONTCOLOR]: "#33333",
-      [mxConstants.STYLE_EDITABLE]: "0",
+      [mxConstants.STYLE_FONTCOLOR]: '#33333',
+      [mxConstants.STYLE_EDITABLE]: '0'
       // [mxConstants.STYLE_LABEL_BACKGROUNDCOLOR]: '#ffa94d',
     })
-    style[mxConstants.STYLE_EDGE] = "orthogonalEdgeStyle"
+    style[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle'
     // 设置拖拽线的过程出现折线，默认为直线
     this.connectionHandler.createEdgeState = () => {
       const edge = this.createEdge(
         this.defaultParent,
         null,
-        "",
+        '',
         new mxCell(),
         new mxCell()
       )
@@ -160,12 +160,12 @@ class MyGraph extends mxGraph {
         const action = this.actions.action[key]
         const shortcutKey = action.shortcutKey
         if (shortcutKey) {
-          const keyArray = shortcutKey.split("+")
+          const keyArray = shortcutKey.split('+')
           const isCtrl = keyArray.includes(ctrlKey)
-          const isShift = keyArray.includes("Shift")
+          const isShift = keyArray.includes('Shift')
           const isDownKey =
-            keyArray[keyArray.length - 1] === "加"
-              ? "+"
+            keyArray[keyArray.length - 1] === '加'
+              ? '+'
               : keyArray[keyArray.length - 1]
           const downKey = keyCode[isDownKey]
           this.keyHandler.bindAction(downKey, isCtrl, key, isShift)
@@ -176,7 +176,7 @@ class MyGraph extends mxGraph {
   _setDrop() {
     this.setDropEnabled(true)
     this.isValidDropTarget = function (target, cells, evt) {
-      if (target.info && target.info.type === "combo") {
+      if (target.info && target.info.type === 'combo') {
         return true
       }
       return false
@@ -213,15 +213,15 @@ class MyGraph extends mxGraph {
         }
       }
     }
-    const actions = ["cut", "copy", "delete", "toFront", "toBack"]
+    const actions = ['cut', 'copy', 'delete', 'toFront', 'toBack']
     for (var i = 0; i < actions.length; i++) {
       this.actions.get(actions[i]).setEnabled(selected)
     }
     var oneVertexSelected = vertexSelected && this.getSelectionCount() == 1
     this.actions
-      .get("group")
+      .get('group')
       .setEnabled(this.getSelectionCount() > 1 || oneVertexSelected)
-    this.actions.get("ungroup").setEnabled(groupSelected)
+    this.actions.get('ungroup').setEnabled(groupSelected)
   }
   _setAnchors() {
     // 禁止从节点中心拖拽出线条
@@ -260,7 +260,7 @@ class MyGraph extends mxGraph {
       new mxConnectionConstraint(new mxPoint(1, 0.75), true),
       new mxConnectionConstraint(new mxPoint(0.25, 1), true),
       new mxConnectionConstraint(new mxPoint(0.5, 1), true),
-      new mxConnectionConstraint(new mxPoint(0.75, 1), true),
+      new mxConnectionConstraint(new mxPoint(0.75, 1), true)
     ]
   }
   _rightClickMenu() {
@@ -272,9 +272,9 @@ class MyGraph extends mxGraph {
           this.cellRightClick(cells, menu)
         }
         menu.addItem(
-          "删除",
+          '删除',
           undefined,
-          this.actions.get("delete").func.bind(this, this)
+          this.actions.get('delete').func.bind(this, this)
         )
       }
     }
@@ -298,17 +298,17 @@ class MyGraph extends mxGraph {
     for (var i = 1; i < 4; i++) {
       var tmp3 = i * tmp
       d.push(
-        "M 0 " +
+        'M 0 ' +
           tmp3 +
-          " L " +
+          ' L ' +
           tmp2 +
-          " " +
+          ' ' +
           tmp3 +
-          " M " +
+          ' M ' +
           tmp3 +
-          " 0 L " +
+          ' 0 L ' +
           tmp3 +
-          " " +
+          ' ' +
           tmp2
       )
     }
@@ -330,13 +330,13 @@ class MyGraph extends mxGraph {
       tmp2 +
       '" patternUnits="userSpaceOnUse">' +
       '<path d="' +
-      d.join(" ") +
+      d.join(' ') +
       '" fill="none" stroke="' +
       color +
       '" opacity="0.2" stroke-width="1"/>' +
       '<path d="M ' +
       tmp2 +
-      " 0 L 0 0 0 " +
+      ' 0 L 0 0 0 ' +
       tmp2 +
       '" fill="none" stroke="' +
       color +
@@ -348,10 +348,10 @@ class MyGraph extends mxGraph {
   /**设置Grid */
   setGrid() {
     const svg = this.createSvgGrid()
-    let image = ""
+    let image = ''
     image = unescape(encodeURIComponent(svg))
     image = btoa(image)
-    image = "url(" + "data:image/svg+xml;base64," + image + ")"
+    image = 'url(' + 'data:image/svg+xml;base64,' + image + ')'
     this.container.style.backgroundImage = `${image}`
   }
   sidebarToGraph(
@@ -381,7 +381,7 @@ class MyGraph extends mxGraph {
     const cell = this.insertVertex(
       parent,
       cfg.id,
-      "",
+      cfg.value ? cfg.value : '',
       cfg.x,
       cfg.y,
       cfg.width,
@@ -427,7 +427,7 @@ class MyGraph extends mxGraph {
       mapping
     )
     if (target) {
-      if (target.id === "1") {
+      if (target.id === '1') {
         this.handleDropOut && this.handleDropOut(target, cells)
       } else {
         this.handleDropIn && this.handleDropIn(target, cells)
@@ -443,7 +443,7 @@ class MyGraph extends mxGraph {
   findById(id: string | ((cell: typeMxCell) => boolean)) {
     const cells = this.getAllCells()
     const cell = cells.find((ele) => {
-      if (typeof id === "string") {
+      if (typeof id === 'string') {
         return ele.id === id
       } else {
         return id(ele)
@@ -456,7 +456,7 @@ class MyGraph extends mxGraph {
     for (const key in this.model.cells) {
       if (Object.prototype.hasOwnProperty.call(this.model.cells, key)) {
         const element = this.model.cells[key]
-        if (key !== "0" && key !== "1") {
+        if (key !== '0' && key !== '1') {
           cells.push(element)
         }
       }
@@ -493,8 +493,8 @@ class MyGraph extends mxGraph {
    * 撤回和取消撤回的监听函数
    */
   addUndoListener() {
-    const undo = this.actions.get("undo")
-    const redo = this.actions.get("redo")
+    const undo = this.actions.get('undo')
+    const redo = this.actions.get('redo')
 
     const undoMgr = this.actions.undoManager
 
