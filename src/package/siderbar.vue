@@ -1,53 +1,54 @@
 <template>
   <div class="relative overflow-auto shadow-sm sidebar">
     <div id="sidebar_graph_container" class="overflow-auto"></div>
-    <details
-      class="group [&_summary::-webkit-details-marker]:hidden"
-      open
-      v-if="props.showGroup"
-    >
-      <summary
-        class="flex items-center justify-between px-4 py-2 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-700"
+    <template v-if="!Array.isArray(htmls)">
+      <details
+        class="group [&_summary::-webkit-details-marker]:hidden"
+        open
+        v-for="(item, key) in htmls"
       >
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium">
-            {{ props.groupText ? props.groupText : '图元' }}
-          </span>
-        </div>
-
-        <span class="transition duration-300 shrink-0 group-open:-rotate-180">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </span>
-      </summary>
-      <nav aria-label="Teams Nav" class="flex flex-col mt-2">
-        <div
-          v-for="(item, index) in htmls"
-          :key="index"
-          class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
-          :ref="getSidebarRef"
-          :data-realWidth="item.width"
-          :data-realHeight="item.height"
-          :data-type="item.cell.isVertex()"
-          @mousedown="handleItemMouseDown(item)"
+        <summary
+          class="flex items-center justify-between px-4 py-2 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-700"
         >
-          <div class="w-12 h-8" v-html="item.html"></div>
-          <span class="leading-8 truncate" :title="item.code">{{
-            item.code
-          }}</span>
-        </div>
-      </nav>
-    </details>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium"> {{ key }} </span>
+          </div>
+
+          <span class="transition duration-300 shrink-0 group-open:-rotate-180">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </summary>
+        <nav aria-label="Teams Nav" class="flex flex-col mt-2">
+          <div
+            v-for="(ele, index) in item"
+            :key="index"
+            class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
+            :ref="getSidebarRef"
+            :data-realWidth="ele.width"
+            :data-realHeight="ele.height"
+            :data-type="ele.cell.isVertex()"
+            @mousedown="handleItemMouseDown(ele)"
+          >
+            <div class="w-12 h-8" v-html="ele.html"></div>
+            <span class="leading-8 truncate" :title="ele.code">{{
+              ele.code
+            }}</span>
+          </div>
+        </nav>
+      </details>
+    </template>
+
     <template v-else>
       <div
         v-for="(item, index) in htmls"
@@ -93,7 +94,7 @@ import clone from 'lodash.clonedeep'
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
 
 const graph = ref<MyGraph>()
-const htmls = ref<SidebarHTMLItem[]>([])
+const htmls = ref<SidebarHTMLItem[] | Record<string, SidebarHTMLItem[]>>([])
 const sidebarDoms = ref<HTMLElement[]>([])
 const importDataHTMls = ref<SidebarHTMLItem[]>([])
 const thumbBorder = 2
@@ -123,66 +124,90 @@ watch(
 )
 
 const loadNodes = async () => {
-  htmls.value = []
   await nextTick()
-  props.nodes.forEach((ele, index) => {
-    if (ele.type === 'vertex') {
-      const { height, width } = ele
-      const node: NodeConfig = {
-        id: '',
-        width: width,
-        height: height,
-        x: 0,
-        y: 0,
-        style: ele.style,
-        type: 'vertex',
-        info: ele.info,
-        value: ele.value
+  if (Array.isArray(props.nodes)) {
+    htmls.value = []
+    props.nodes.forEach((ele) => {
+      if (!Array.isArray(htmls.value)) return
+      const htmlItem =
+        ele.type === 'edge' ? getEdgeHtml(ele) : getVertexHtml(ele)
+      if (htmlItem) {
+        htmls.value.push(htmlItem)
       }
-      const cell = graph.value?.insertVertetByConfig(node)
-      if (cell) {
-        const html = createItem([cell], ele.name, width, height)
-        htmls.value.push({
-          html: html as string,
-          width,
-          height,
-          cell: cell,
-          code: ele.name
-        })
-      }
-    } else if (ele.type === 'edge') {
-      // const styles = props.graph?.getLineStyle(ele.shapeType)
-      // if (!styles) return
-      // const { style, code } = styles
-      const edge: NodeConfig = {
-        id: '',
-        width: ele.width,
-        height: ele.height,
-        x: 0,
-        y: 0,
-        style: ele.style,
-        type: 'edge',
-        info: {},
-        value: ''
-      }
-      const cell = graph.value?.insertEdgeByConfig(edge)
-      if (cell) {
-        cell.geometry.sourcePoint = new mxPoint(0, 0)
-        cell.geometry.targetPoint = new mxPoint(100, 0)
-        const html = createItem([cell], ele.name, 200, 100)
-        htmls.value.push({
-          html: html as string,
-          width: 200,
-          height: 100,
-          cell: cell,
-          code: ele.name
+    })
+  } else {
+    htmls.value = {}
+    for (const key in props.nodes) {
+      if (Object.prototype.hasOwnProperty.call(props.nodes, key)) {
+        const element = props.nodes[key]
+        htmls.value[key] = []
+        element.forEach((ele) => {
+          const htmlItem =
+            ele.type === 'edge' ? getEdgeHtml(ele) : getVertexHtml(ele)
+          if (htmlItem && !Array.isArray(htmls.value)) {
+            htmls.value[key].push(htmlItem)
+          }
         })
       }
     }
-  })
+  }
+
   nextTick(() => {
     makeDraggableAndHover()
   })
+}
+
+const getVertexHtml = (item: SidebarNode): SidebarHTMLItem | undefined => {
+  const { height, width } = item
+  const node: NodeConfig = {
+    id: '',
+    width: width,
+    height: height,
+    x: 0,
+    y: 0,
+    style: item.style,
+    type: 'vertex',
+    info: item.info,
+    value: item.value
+  }
+  const cell = graph.value?.insertVertetByConfig(node)
+  if (cell) {
+    const html = createItem([cell], item.name, width, height)
+    return {
+      html: html as string,
+      width,
+      height,
+      cell: cell,
+      code: item.name
+    }
+  }
+}
+
+const getEdgeHtml = (item: SidebarNode): SidebarHTMLItem | undefined => {
+  const edge: NodeConfig = {
+    id: '',
+    width: item.width,
+    height: item.height,
+    x: 0,
+    y: 0,
+    style: item.style,
+    type: 'edge',
+    info: {},
+    value: ''
+  }
+  const cell = graph.value?.insertEdgeByConfig(edge)
+  if (cell) {
+    cell.geometry.sourcePoint = new mxPoint(0, 0)
+    cell.geometry.targetPoint = new mxPoint(100, 0)
+    const html = createItem([cell], item.name, 200, 100)
+    return {
+      html: html as string,
+      width: 200,
+      height: 100,
+      cell: cell,
+      code: item.name
+    }
+  }
 }
 const getSidebarRef = (ele: any) => {
   sidebarDoms.value.push(ele)
