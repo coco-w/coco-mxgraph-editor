@@ -1,25 +1,70 @@
 <template>
   <div class="relative overflow-auto shadow-sm sidebar">
     <div id="sidebar_graph_container" class="overflow-auto"></div>
-    <div
-      v-for="(item, index) in htmls"
-      :key="index"
-      class="flex justify-start p-2 align-middle cursor-pointer sidebar_item hover:bg-gray-300"
-      :ref="getSidebarRef"
-      :data-realWidth="item.width"
-      :data-realHeight="item.height"
-      :data-type="item.cell.isVertex()"
-      @mousedown="handleItemMouseDown(item)"
+    <details
+      class="group [&_summary::-webkit-details-marker]:hidden"
+      open
+      v-if="props.showGroup"
     >
-      <div class="w-12 h-8" v-html="item.html"></div>
-      <span class="leading-8 truncate" :title="item.code">{{ item.code }}</span>
-    </div>
-    <!-- <div class="sidebar_preview">
-          <div class="sidebar_preview_svg">
-            <div class="svg_wrapper"></div>
-          </div>
-          <div class="sidebar_preview_title">{{ previewTitle }}</div>
-        </div> -->
+      <summary
+        class="flex items-center justify-between px-4 py-2 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-700"
+      >
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium">
+            {{ props.groupText ? props.groupText : '图元' }}
+          </span>
+        </div>
+
+        <span class="transition duration-300 shrink-0 group-open:-rotate-180">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      </summary>
+      <nav aria-label="Teams Nav" class="flex flex-col mt-2">
+        <div
+          v-for="(item, index) in htmls"
+          :key="index"
+          class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
+          :ref="getSidebarRef"
+          :data-realWidth="item.width"
+          :data-realHeight="item.height"
+          :data-type="item.cell.isVertex()"
+          @mousedown="handleItemMouseDown(item)"
+        >
+          <div class="w-12 h-8" v-html="item.html"></div>
+          <span class="leading-8 truncate" :title="item.code">{{
+            item.code
+          }}</span>
+        </div>
+      </nav>
+    </details>
+    <template v-else>
+      <div
+        v-for="(item, index) in htmls"
+        :key="index"
+        class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
+        :ref="getSidebarRef"
+        :data-realWidth="item.width"
+        :data-realHeight="item.height"
+        :data-type="item.cell.isVertex()"
+        @mousedown="handleItemMouseDown(item)"
+      >
+        <div class="w-12 h-8" v-html="item.html"></div>
+        <span class="leading-8 truncate" :title="item.code">{{
+          item.code
+        }}</span>
+      </div>
+    </template>
     <slot name="sidebar"> </slot>
   </div>
 </template>

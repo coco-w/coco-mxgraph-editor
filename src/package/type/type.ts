@@ -47,6 +47,8 @@ export interface ToolbarProps {
 export interface SidebarProps {
   graph?: MyGraph
   nodes: SidebarNode[]
+  showGroup?: boolean
+  groupText?: string
 }
 
 export interface DrawProps extends ToolbarProps, SidebarProps {

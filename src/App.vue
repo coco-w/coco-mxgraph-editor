@@ -1,6 +1,12 @@
 <template>
   <div>
-    <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
+    <drawVue
+      :nodes="nodes"
+      :toolbar="['undo', 'redo']"
+      :outlineMap="true"
+      :showGroup="true"
+      groupText="asasd"
+    >
       <template #sidebar>asdasdasd</template>
     </drawVue>
   </div>

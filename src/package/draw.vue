@@ -1,7 +1,12 @@
 <template>
   <div class="flex w-full h-full draw">
     <div class="h-full sider-wrapper" style="width: 200px" v-if="!hideSidebar">
-      <SiderbarVue :nodes="props.nodes" :graph="graph">
+      <SiderbarVue
+        :nodes="props.nodes"
+        :graph="graph"
+        :show-group="props.showGroup"
+        :group-text="props.groupText"
+      >
         <template #sidebar>
           <slot name="sidebar"></slot>
         </template>
