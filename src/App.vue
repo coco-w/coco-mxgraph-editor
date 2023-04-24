@@ -1,6 +1,12 @@
 <template>
   <div>
-    <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
+    <drawVue
+      :nodes="nodes"
+      :toolbar="['undo', 'redo']"
+      :outlineMap="true"
+      ref="draw"
+      :beforeAddVertex="beforeAddVertex"
+    >
       <!-- <template #sidebar>asdasdasd</template> -->
     </drawVue>
   </div>
@@ -14,6 +20,7 @@ import mx from './package/factory'
 import { SidebarNode, SidebarNodeConfig } from './package/type/type'
 import './shape'
 const nodes = ref<SidebarNode[]>([])
+const draw = ref()
 mx.mxConnectionHandler.prototype.connect = function (
   source: mxCell,
   target: mxCell,
@@ -71,6 +78,9 @@ onMounted(() => {
     }
   ]
 })
+const beforeAddVertex = (cell: mxCell) => {
+  return false
+}
 // 类型1: [
 //       {
 //         name: '能力域123',

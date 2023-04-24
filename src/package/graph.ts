@@ -62,6 +62,7 @@ class MyGraph extends mxGraph {
     id: string
   }) => void
   beforeDeleteCell?: (cell: typeMxCell) => boolean
+  beforeAddVertex?: (cell: typeMxCell) => boolean
   // menuClick?:()
   constructor(container: HTMLElement) {
     super(container)
@@ -361,6 +362,7 @@ class MyGraph extends mxGraph {
     target: typeMxCell
   ) {
     try {
+      if (this.beforeAddVertex && !this.beforeAddVertex(dragCell)) return
       this.getModel().beginUpdate()
       dragCell.id = nanoid()
       this.createVertexStatus = true

@@ -53,8 +53,6 @@ export interface ToolbarProps {
 export interface SidebarProps {
   graph?: MyGraph
   nodes: SidebarNode[]
-  // showGroup?: boolean
-  // groupText?: string
 }
 
 export interface SidebarNode {
@@ -71,5 +69,6 @@ export interface DrawProps extends ToolbarProps, SidebarProps {
   handleMoveCell?: (cell: mxCell) => void
   cellRightClick?: (cells: mxCell[], menu: mxPopupMenuHandler) => void
   beforeDeleteCell?: (cell: mxCell) => boolean
+  beforeAddVertex?: (cell: mxCell) => boolean
   outlineMap?: boolean
 }

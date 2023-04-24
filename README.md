@@ -108,7 +108,13 @@ string[]
 ```ts
 (cell: mxCell) => boolean
 ```
+### beforeAddCell?
 
+添加节点前触发，返回`false`不会添加节点
+
+```ts
+(cell: mxCell) => boolean
+```
 ## 连接规则
 ```ts
 mx.mxConnectionHandler.prototype.connect = function (
