@@ -16,7 +16,7 @@ export interface NodeConfig extends Record<string, any> {
   value?: string
 }
 
-export interface SidebarNode {
+export interface SidebarNodeConfig {
   name: string
   style: string
   type: ItemType
@@ -35,6 +35,12 @@ export interface SidebarHTMLItem {
   code: string
 }
 
+export interface SidebarHTML {
+  name: string
+  nodes?: SidebarHTMLItem[]
+  children?: SidebarHTML[]
+}
+
 export interface DrawInstance {
   graph: MyGraph
 }
@@ -46,9 +52,15 @@ export interface ToolbarProps {
 
 export interface SidebarProps {
   graph?: MyGraph
-  nodes: SidebarNode[] | Record<string, SidebarNode[]>
+  nodes: SidebarNode[]
   // showGroup?: boolean
   // groupText?: string
+}
+
+export interface SidebarNode {
+  name: string
+  nodes?: SidebarNodeConfig[]
+  children?: SidebarNode[]
 }
 
 export interface DrawProps extends ToolbarProps, SidebarProps {

@@ -1,71 +1,57 @@
 <template>
   <div class="relative overflow-auto shadow-sm sidebar">
     <div id="sidebar_graph_container" class="overflow-auto"></div>
-    <template v-if="!Array.isArray(htmls)">
-      <details
-        class="group [&_summary::-webkit-details-marker]:hidden"
-        open
-        v-for="(item, key) in htmls"
+    <!-- <details
+      class="group [&_summary::-webkit-details-marker]:hidden"
+      open
+      v-for="item in htmls"
+    >
+      <summary
+        class="flex items-center justify-between px-4 py-2 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-700"
       >
-        <summary
-          class="flex items-center justify-between px-4 py-2 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-700"
-        >
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-medium"> {{ key }} </span>
-          </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium"> {{ item.name }} </span>
+        </div>
 
-          <span class="transition duration-300 shrink-0 group-open:-rotate-180">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </span>
-        </summary>
-        <nav aria-label="Teams Nav" class="flex flex-col mt-2">
-          <div
-            v-for="(ele, index) in item"
-            :key="index"
-            class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
-            :ref="getSidebarRef"
-            :data-realWidth="ele.width"
-            :data-realHeight="ele.height"
-            :data-type="ele.cell.isVertex()"
-            @mousedown="handleItemMouseDown(ele)"
+        <span class="transition duration-300 shrink-0 group-open:-rotate-180">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
           >
-            <div class="w-12 h-8" v-html="ele.html"></div>
-            <span class="leading-8 truncate" :title="ele.code">{{
-              ele.code
-            }}</span>
-          </div>
-        </nav>
-      </details>
-    </template>
-
-    <template v-else>
-      <div
-        v-for="(item, index) in htmls"
-        :key="index"
-        class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
-        :ref="getSidebarRef"
-        :data-realWidth="item.width"
-        :data-realHeight="item.height"
-        :data-type="item.cell.isVertex()"
-        @mousedown="handleItemMouseDown(item)"
-      >
-        <div class="w-12 h-8" v-html="item.html"></div>
-        <span class="leading-8 truncate" :title="item.code">{{
-          item.code
-        }}</span>
-      </div>
-    </template>
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </span>
+      </summary>
+      <nav class="flex flex-col mt-2">
+        <div
+          v-for="(ele, index) in item.nodes"
+          :key="index"
+          class="flex justify-start p-2 align-middle transition duration-300 cursor-pointer sidebar_item hover:bg-gray-300 shrink-0"
+          :ref="getSidebarRef"
+          :data-realWidth="ele.width"
+          :data-realHeight="ele.height"
+          :data-type="ele.cell.isVertex()"
+          @mousedown="handleItemMouseDown(ele)"
+        >
+          <div class="w-12 h-8" v-html="ele.html"></div>
+          <span class="leading-8 truncate" :title="ele.code">{{
+            ele.code
+          }}</span>
+        </div>
+      </nav>
+    </details> -->
+    <sidebarDetails
+      :htmls="htmls"
+      :get-sidebar-ref="getSidebarRef"
+      :handle-item-mouse-down="handleItemMouseDown"
+      :open="true"
+    />
     <slot name="sidebar"> </slot>
   </div>
 </template>
@@ -84,17 +70,20 @@ import _ from 'lodash'
 import MyGraph from './graph'
 import { mxCell as TypeMxCell } from 'mxgraph'
 import {
-  SidebarNode,
+  SidebarNodeConfig,
   NodeConfig,
   SidebarHTMLItem,
-  SidebarProps
+  SidebarProps,
+  SidebarNode,
+  SidebarHTML
 } from './type/type'
 import clone from 'lodash.clonedeep'
+import sidebarDetails from './sidebarDetails.vue'
 
 const { mxCell, mxGeometry, mxGraph, mxUtils, mxPoint } = mx
 
 const graph = ref<MyGraph>()
-const htmls = ref<SidebarHTMLItem[] | Record<string, SidebarHTMLItem[]>>([])
+const htmls = ref<SidebarHTML[]>([])
 const sidebarDoms = ref<HTMLElement[]>([])
 const importDataHTMls = ref<SidebarHTMLItem[]>([])
 const thumbBorder = 2
@@ -125,39 +114,58 @@ watch(
 
 const loadNodes = async () => {
   await nextTick()
-  if (Array.isArray(props.nodes)) {
-    htmls.value = []
-    props.nodes.forEach((ele) => {
-      if (!Array.isArray(htmls.value)) return
-      const htmlItem =
-        ele.type === 'edge' ? getEdgeHtml(ele) : getVertexHtml(ele)
-      if (htmlItem) {
-        htmls.value.push(htmlItem)
-      }
-    })
-  } else {
-    htmls.value = {}
-    for (const key in props.nodes) {
-      if (Object.prototype.hasOwnProperty.call(props.nodes, key)) {
-        const element = props.nodes[key]
-        htmls.value[key] = []
-        element.forEach((ele) => {
-          const htmlItem =
-            ele.type === 'edge' ? getEdgeHtml(ele) : getVertexHtml(ele)
-          if (htmlItem && !Array.isArray(htmls.value)) {
-            htmls.value[key].push(htmlItem)
-          }
-        })
-      }
-    }
-  }
+  // htmls.value = []
+  htmls.value = transitionNodes(props.nodes)
+  // if (Array.isArray(props.nodes)) {
+  //   props.nodes.forEach((ele) => {})
+  // } else {
+  //   for (const key in props.nodes) {
+  //     if (Object.prototype.hasOwnProperty.call(props.nodes, key)) {
+  //       const element = props.nodes[key]
+  //       htmls.value[key] = []
+  //       element.forEach((ele) => {
+  //         const htmlItem =
+  //           ele.type === 'edge' ? getEdgeHtml(ele) : getVertexHtml(ele)
+  //         if (htmlItem && !Array.isArray(htmls.value)) {
+  //           htmls.value[key].push(htmlItem)
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
 
   nextTick(() => {
     makeDraggableAndHover()
   })
 }
 
-const getVertexHtml = (item: SidebarNode): SidebarHTMLItem | undefined => {
+const transitionNodes = (nodes: SidebarNode[]) => {
+  const res: SidebarHTML[] = []
+  nodes.forEach((ele) => {
+    const item: SidebarHTML = {
+      name: ele.name
+    }
+    if (ele.nodes) {
+      item.nodes = []
+      ele.nodes.forEach((n) => {
+        const html =
+          n.type === 'vertex'
+            ? (getVertexHtml(n) as SidebarHTMLItem)
+            : (getEdgeHtml(n) as SidebarHTMLItem)
+        item.nodes?.push(html)
+      })
+    }
+    if (ele.children) {
+      item.children = transitionNodes(ele.children)
+    }
+    res.push(item)
+  })
+  return res
+}
+
+const getVertexHtml = (
+  item: SidebarNodeConfig
+): SidebarHTMLItem | undefined => {
   const { height, width } = item
   const node: NodeConfig = {
     id: '',
@@ -183,7 +191,7 @@ const getVertexHtml = (item: SidebarNode): SidebarHTMLItem | undefined => {
   }
 }
 
-const getEdgeHtml = (item: SidebarNode): SidebarHTMLItem | undefined => {
+const getEdgeHtml = (item: SidebarNodeConfig): SidebarHTMLItem | undefined => {
   const edge: NodeConfig = {
     id: '',
     width: item.width,

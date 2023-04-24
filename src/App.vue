@@ -1,7 +1,7 @@
 <template>
   <div>
     <drawVue :nodes="nodes" :toolbar="['undo', 'redo']" :outlineMap="true">
-      <template #sidebar>asdasdasd</template>
+      <!-- <template #sidebar>asdasdasd</template> -->
     </drawVue>
   </div>
 </template>
@@ -11,9 +11,9 @@ import { mxCell } from 'mxgraph'
 import { onMounted, ref } from 'vue'
 import drawVue from './package/draw.vue'
 import mx from './package/factory'
-import { SidebarNode } from './package/type/type'
+import { SidebarNode, SidebarNodeConfig } from './package/type/type'
 import './shape'
-const nodes = ref<Record<string, SidebarNode[]>>({})
+const nodes = ref<SidebarNode[]>([])
 mx.mxConnectionHandler.prototype.connect = function (
   source: mxCell,
   target: mxCell,
@@ -24,32 +24,76 @@ mx.mxConnectionHandler.prototype.connect = function (
   this.originConnect.apply(this, arguments as any)
 }
 onMounted(() => {
-  nodes.value = {
-    类型1: [
-      {
-        name: '能力域123',
-        style: 'shape=rectangle;',
-        value: '111',
-        type: 'vertex',
-        width: 180,
-        height: 180,
-        info: {
-          name: '能力域',
-          nodeType: 'ability_field'
+  nodes.value = [
+    {
+      name: '类型1',
+      nodes: [
+        {
+          name: '能力域123',
+          style: 'shape=rectangle;',
+          value: '111',
+          type: 'vertex',
+          width: 180,
+          height: 180,
+          info: {
+            name: '能力域',
+            nodeType: 'ability_field'
+          }
         }
-      }
-    ],
-    类型2: [
-      {
-        name: '撒大苏打',
-        style: 'rounded=1;',
-        type: 'vertex',
-        width: 100,
-        height: 100
-      }
-    ]
-  }
+      ],
+      children: [
+        {
+          name: '类型3',
+          nodes: [
+            {
+              name: '撒大苏打',
+              style: 'rounded=1;',
+              value: '111777777',
+              type: 'vertex',
+              width: 100,
+              height: 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: '类型2',
+      nodes: [
+        {
+          name: '撒大苏打',
+          style: 'rounded=1;',
+          type: 'vertex',
+          width: 100,
+          height: 100
+        }
+      ]
+    }
+  ]
 })
+// 类型1: [
+//       {
+//         name: '能力域123',
+//         style: 'shape=rectangle;',
+//         value: '111',
+//         type: 'vertex',
+//         width: 180,
+//         height: 180,
+//         info: {
+//           name: '能力域',
+//           nodeType: 'ability_field'
+//         }
+//       }
+//     ],
+//     类型2: [
+//       {
+//         name: '撒大苏打',
+//         style: 'rounded=1;',
+//         type: 'vertex',
+//         width: 100,
+//         height: 100
+//       }
+//     ]
 </script>
 
 <style scoped></style>

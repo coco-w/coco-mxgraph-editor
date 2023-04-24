@@ -14,18 +14,26 @@
 
 ## props
 
-### sidebarNodes
+### nodes
 
-`SidebarItem[]`
+`SidebarNode[]`
 出现在侧边栏的节点
 
 ```ts
-interface SidebarItem {
+interface SidebarNode {
+  name: string
+  nodes?: SidebarNodeConfig[]
+  children?: SidebarNode[]
+}
+
+
+interface SidebarNodeConfig {
   name: string
   style: string
-  type: 'edge' | 'vertex'
+  type: ItemType
   width: number
   height: number
+  value?: string
   info?: Record<string, any>
 }
 ```
@@ -111,4 +119,10 @@ mx.mxConnectionHandler.prototype.connect = function (
 ) {
   this.originConnect.apply(this, arguments as any)
 }
+```
+
+## outlineMap
+鸟瞰图
+```ts
+boolean
 ```

@@ -29,7 +29,7 @@ import MyGraph from './graph'
 import SiderbarVue from './siderbar.vue'
 import Toolbar from './toolbar.vue'
 import '../index.css'
-import { DrawInstance, DrawProps, SidebarNode } from './type/type'
+import { DrawInstance, DrawProps, SidebarNodeConfig } from './type/type'
 const props = defineProps<DrawProps>()
 const graph = shallowRef<MyGraph>()
 onMounted(() => {
