@@ -1,6 +1,6 @@
 {
   "name": "coco-mxgraph-editor",
-  "version": "0.0.79",
+  "version": "0.0.8",
   "private": false,
   "files": [
     "dist",
@@ -16,10 +16,12 @@
     "build:dts": "vue-dts-gen src/package/editor.vue"
   },
   "dependencies": {
+    "element-plus": "^2.3.4",
     "lodash.clonedeep": "^4.5.0",
     "mxgraph": "^4.2.2",
     "nanoid": "^4.0.0",
-    "vue": "^3.2.41"
+    "vue": "^3.2.41",
+    "vue-sidebar-menu": "^5.2.6"
   },
   "devDependencies": {
     "@typed-mxgraph/typed-mxgraph": "^1.0.7",
@@ -33,6 +35,8 @@
     "sass": "^1.56.1",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.6.4",
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-vue-components": "^0.24.1",
     "vite": "^3.2.3",
     "vite-plugin-dts": "^1.7.1",
     "vite-plugin-vue-type-imports": "^0.2.4",

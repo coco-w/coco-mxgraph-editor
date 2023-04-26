@@ -36,7 +36,19 @@ onMounted(() => {
       name: '类型1',
       nodes: [
         {
-          name: '能力域123',
+          name: '能力域1233123123123123',
+          style: 'shape=rectangle;',
+          value: '111',
+          type: 'vertex',
+          width: 180,
+          height: 180,
+          info: {
+            name: '能力域',
+            nodeType: 'ability_field'
+          }
+        },
+        {
+          name: '能力域123123123123',
           style: 'shape=rectangle;',
           value: '111',
           type: 'vertex',
@@ -79,7 +91,7 @@ onMounted(() => {
   ]
 })
 const beforeAddVertex = (cell: mxCell) => {
-  return false
+  return true
 }
 // 类型1: [
 //       {
