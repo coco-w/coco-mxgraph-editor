@@ -37,7 +37,7 @@ onMounted(() => {
       nodes: [
         {
           name: '能力域1233123123123123',
-          style: 'shape=rectangle;',
+          style: 'shape=swimlane;',
           value: '111',
           type: 'vertex',
           width: 180,
@@ -89,6 +89,27 @@ onMounted(() => {
       ]
     }
   ]
+  const graph = draw.value.graph
+
+  var v1 = graph.insertVertex(
+    graph.defaultParent,
+    null,
+    'Hello,',
+    20,
+    20,
+    80,
+    30
+  )
+  var v2 = graph.insertVertex(
+    graph.defaultParent,
+    null,
+    'World!',
+    200,
+    150,
+    80,
+    30
+  )
+  var e1 = graph.insertEdge(graph.defaultParent, null, '', v1, v2)
 })
 const beforeAddVertex = (cell: mxCell) => {
   return true

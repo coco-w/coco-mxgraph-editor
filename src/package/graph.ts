@@ -86,7 +86,6 @@ class MyGraph extends mxGraph {
     this.getSelectionModel().addListener(mxEvent.CHANGE, () => {
       this._initActionState()
     })
-
     this.getModel().addListener(mxEvent.CHANGE, () => {
       this._initActionState()
     })
@@ -95,7 +94,7 @@ class MyGraph extends mxGraph {
     // cell style editable 控制是否可以双击编辑
     this.setConnectable(true)
     mxEvent.disableContextMenu(this.container)
-    // // 固定节点大小
+    // 固定节点大小
     this.setCellsResizable(false)
     // // 编辑时按回车键不换行，而是完成输入
     // this.setEnterStopsCellEditing(true)
@@ -117,7 +116,7 @@ class MyGraph extends mxGraph {
     // mxGraph.prototype.isCellMovable=function = cell => !cell.edge
 
     // // 禁止调整线条弯曲度
-    this.setCellsBendable(false)
+    // this.setCellsBendable(false)
 
     // // 禁止从将label从线条上拖离
     mxGraph.prototype.edgeLabelsMovable = false
@@ -141,6 +140,13 @@ class MyGraph extends mxGraph {
       [mxConstants.STYLE_EDITABLE]: '0'
       // [mxConstants.STYLE_LABEL_BACKGROUNDCOLOR]: '#ffa94d',
     })
+
+    mx.mxEdgeHandler.prototype.handleImage = new mx.mxImage(
+      'images/handle-main.png',
+      17,
+      17
+    )
+
     style[mxConstants.STYLE_EDGE] = 'orthogonalEdgeStyle'
     // 设置拖拽线的过程出现折线，默认为直线
     this.connectionHandler.createEdgeState = () => {
@@ -231,6 +237,8 @@ class MyGraph extends mxGraph {
 
     // hover时显示连接节点
     mxGraph.prototype.getAllConnectionConstraints = (terminal) => {
+      if (terminal != null && terminal.cell != null && terminal.cell.isEdge())
+        return []
       if (terminal != null && terminal.shape != null) {
         if (terminal.shape.stencil != null) {
           if (terminal.shape.stencil != null) {
