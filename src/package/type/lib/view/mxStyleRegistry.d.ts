@@ -6,24 +6,27 @@ declare module 'mxgraph' {
    * in a style. This is currently only used to perimeters and edge styles.
    */
   class mxStyleRegistry {
+    // static putValue(arg0: string, LifelinePerimeter: (bounds: mxRectangle, vertex: mxCellState, next: mxPoint, orthogonal?: boolean | undefined) => mxPoint) {
+    //   throw new Error('Method not implemented.');
+    // }
     /**
      * Maps from strings to objects.
      */
-    values: { [key: string]: any };
+    static values: { [key: string]: any }
 
     /**
      * Puts the given object into the registry under the given name.
      */
-    putValue(name: string, obj: any): void;
+    static putValue(name: string, obj: any): void
 
     /**
      * Returns the value associated with the given name.
      */
-    getValue(name: string): any;
+    static getValue(name: string): any
 
     /**
      * Returns the name for the given value.
      */
-    getName(value: any): string;
+    static getName(value: any): string
   }
 }

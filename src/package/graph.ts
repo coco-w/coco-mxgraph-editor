@@ -232,7 +232,7 @@ class MyGraph extends mxGraph {
   }
   _setAnchors() {
     // 禁止从节点中心拖拽出线条
-    this.connectionHandler.isConnectableCell = () => false
+    // this.connectionHandler.isConnectableCell = () => false
     mxEdgeHandler.prototype.isConnectableCell = () => false
 
     // hover时显示连接节点

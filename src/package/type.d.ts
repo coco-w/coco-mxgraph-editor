@@ -1,12 +1,11 @@
-import { Action } from './actions';
-import MyGraph from './graph';
+import { Action } from './actions'
+import MyGraph from './graph'
 declare global {
   interface Window {
-    graph: MyGraph;
+    graph: MyGraph
   }
-  
 }
-declare module "mxgraph" {
+declare module 'mxgraph' {
   export interface mxKeyHandler {
     bindAction: (
       downKey: number,

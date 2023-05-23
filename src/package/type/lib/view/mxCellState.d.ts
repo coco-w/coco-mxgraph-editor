@@ -1,22 +1,22 @@
 declare module 'mxgraph' {
   class mxCellState extends mxRectangle {
-    constructor(view: mxGraphView, cell: mxCell, style: { [key: string]: any });
+    constructor(view: mxGraphView, cell: mxCell, style: { [key: string]: any })
 
-    control: mxShape;
+    control: mxShape
 
     /**
      * Variable: view
      *
      * Reference to the enclosing <mxGraphView>.
      */
-    view: mxGraphView;
+    view: mxGraphView
 
     /**
      * Variable: cell
      *
      * Reference to the <mxCell> that is represented by this state.
      */
-    cell: mxCell;
+    cell: mxCell
 
     /**
      * Variable: style
@@ -24,14 +24,14 @@ declare module 'mxgraph' {
      * Contains an array of key, value pairs that represent the style of the
      * cell.
      */
-    style: { [key: string]: any };
+    style: { [key: string]: any }
 
     /**
      * Variable: invalid
      *
      * Specifies if the state is invalid. Default is true.
      */
-    invalid: boolean;
+    invalid: boolean
 
     /**
      * Variable: origin
@@ -39,7 +39,7 @@ declare module 'mxgraph' {
      * <mxPoint> that holds the origin for all child cells. Default is a new
      * empty <mxPoint>.
      */
-    origin: mxPoint;
+    origin: mxPoint
 
     /**
      * Variable: absolutePoints
@@ -47,7 +47,7 @@ declare module 'mxgraph' {
      * Holds an array of <mxPoints> that represent the absolute points of an
      * edge.
      */
-    absolutePoints: mxPoint[];
+    absolutePoints: mxPoint[]
 
     /**
      * Variable: absoluteOffset
@@ -56,35 +56,35 @@ declare module 'mxgraph' {
      * absolute coordinates of the label position. For vertices, this is the
      * offset of the label relative to the top, left corner of the vertex.
      */
-    absoluteOffset: mxPoint;
+    absoluteOffset: mxPoint
 
     /**
      * Variable: visibleSourceState
      *
      * Caches the visible source terminal state.
      */
-    visibleSourceState: mxCellState;
+    visibleSourceState: mxCellState
 
     /**
      * Variable: visibleTargetState
      *
      * Caches the visible target terminal state.
      */
-    visibleTargetState: mxCellState;
+    visibleTargetState: mxCellState
 
     /**
      * Variable: terminalDistance
      *
      * Caches the distance between the end points for an edge.
      */
-    terminalDistance: number;
+    terminalDistance: number
 
     /**
      * Variable: length
      *
      * Caches the length of an edge.
      */
-    length: number;
+    length: number
 
     /**
      * Variable: segments
@@ -92,14 +92,14 @@ declare module 'mxgraph' {
      * Array of numbers that represent the cached length of each segment of the
      * edge.
      */
-    segments: number[];
+    segments: number[]
 
     /**
      * Variable: shape
      *
      * Holds the <mxShape> that represents the cell graphically.
      */
-    shape: mxShape;
+    shape: mxShape
 
     /**
      * Variable: text
@@ -107,18 +107,18 @@ declare module 'mxgraph' {
      * Holds the <mxText> that represents the label of the cell. Thi smay be
      * null if the cell has no label.
      */
-    text: mxText;
+    text: mxText
 
     // used in https://github.com/jgraph/mxgraph/blob/v4.2.2/javascript/src/js/view/mxCellRenderer.js#L555
     // set the type to mxShape and not only to mxImageShape to allow mxCellOverlay extension
-    overlays: mxDictionary<mxShape>;
+    overlays: mxDictionary<mxShape>
 
     /**
      * Variable: unscaledWidth
      *
      * Holds the unscaled width of the state.
      */
-    unscaledWidth: number;
+    unscaledWidth: number
 
     /**
      * Function: getPerimeterBounds
@@ -131,7 +131,7 @@ declare module 'mxgraph' {
      * border - Optional border to be added around the perimeter bounds.
      * bounds - Optional <mxRectangle> to be used as the initial bounds.
      */
-    getPerimeterBounds(border?: number, bounds?: mxRectangle): mxRectangle;
+    getPerimeterBounds(border?: number, bounds?: mxRectangle): mxRectangle
 
     /**
      * Function: setAbsoluteTerminalPoint
@@ -144,14 +144,14 @@ declare module 'mxgraph' {
      * isSource - Boolean that specifies if the first or last point should
      * be assigned.
      */
-    setAbsoluteTerminalPoint(point: mxPoint, isSource: boolean): void;
+    setAbsoluteTerminalPoint(point: mxPoint, isSource: boolean): void
 
     /**
      * Function: setCursor
      *
      * Sets the given cursor on the shape and text shape.
      */
-    setCursor(cursor: string): void;
+    setCursor(cursor: string): void
 
     /**
      * Function: getVisibleTerminal
@@ -163,7 +163,7 @@ declare module 'mxgraph' {
      * source - Boolean that specifies if the source or target cell should be
      * returned.
      */
-    getVisibleTerminal(source: boolean): mxCell;
+    getVisibleTerminal(source: boolean): mxCell
 
     /**
      * Function: getVisibleTerminalState
@@ -175,7 +175,7 @@ declare module 'mxgraph' {
      * source - Boolean that specifies if the source or target state should be
      * returned.
      */
-    getVisibleTerminalState(source?: boolean): mxCellState;
+    getVisibleTerminalState(source?: boolean): mxCellState
 
     /**
      * Function: setVisibleTerminalState
@@ -187,14 +187,14 @@ declare module 'mxgraph' {
      * terminalState - <mxCellState> that represents the terminal.
      * source - Boolean that specifies if the source or target state should be set.
      */
-    setVisibleTerminalState(terminalState: mxCellState, source: boolean): void;
+    setVisibleTerminalState(terminalState: mxCellState, source: boolean): void
 
     /**
      * Function: getCellBounds
      *
      * Returns the unscaled, untranslated bounds.
      */
-    getCellBounds(): mxRectangle;
+    getCellBounds(): mxRectangle
 
     /**
      * Function: getPaintBounds
@@ -203,34 +203,34 @@ declare module 'mxgraph' {
      * <getCellBounds> but with a 90 degree rotation if the shape's
      * isPaintBoundsInverted returns true.
      */
-    getPaintBounds(): mxRectangle;
+    getPaintBounds(): mxRectangle
 
     /**
      * Function: updateCachedBounds
      *
      * Updates the cellBounds and paintBounds.
      */
-    updateCachedBounds(): void;
+    updateCachedBounds(): void
 
     /**
      * Destructor: setState
      *
      * Copies all fields from the given state to this state.
      */
-    setState(state: mxCellState): void;
+    setState(state: mxCellState): void
 
     /**
      * Function: clone
      *
      * Returns a clone of this <mxPoint>.
      */
-    clone(): mxCellState;
+    clone(): mxCellState
 
     /**
      * Destructor: destroy
      *
      * Destroys the state and all associated resources.
      */
-    destroy(): void;
+    destroy(): void
   }
 }

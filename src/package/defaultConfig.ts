@@ -10,7 +10,9 @@ const {
   mxConstraintHandler,
   mxVertexHandler,
   mxCellHighlight,
-  mxEdgeHandler
+  mxEdgeHandler,
+  mxPerimeter,
+  mxStyleRegistry
 } = mx
 //默认的cells[key]中key !== cell.id
 // mxGraphModel.prototype.getCell = function (id) {
@@ -152,3 +154,29 @@ export function clone(item: any) {
 
   return result
 }
+mxPerimeter
+//lifeline 线上链接点自动吸附
+//style设置perimeter=lifelinePerimeter;
+mxPerimeter.LifelinePerimeter = function (bounds, vertex, next, orthogonal) {
+  var size = 60
+
+  if (vertex != null) {
+    size = mx.mxUtils.getValue(vertex.style, 'size', size) * vertex.view.scale
+  }
+
+  var sw =
+    (parseFloat(vertex.style[mx.mxConstants.STYLE_STROKEWIDTH] || 1) *
+      vertex.view.scale) /
+      2 -
+    1
+
+  if (next.x < bounds.getCenterX()) {
+    sw += 1
+    sw *= -1
+  }
+  return new mx.mxPoint(
+    bounds.getCenterX() + sw,
+    Math.min(bounds.y + bounds.height, Math.max(bounds.y + size, next.y))
+  )
+}
+mxStyleRegistry.putValue('lifelinePerimeter', mxPerimeter.LifelinePerimeter)
