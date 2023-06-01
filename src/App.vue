@@ -148,7 +148,7 @@ onMounted(() => {
         },
         {
           name: '能力域123123123123',
-          style: 'shape=rectangle;',
+          style: 'shape=swimlane',
           value: '111',
           type: 'vertex',
           width: 180,

@@ -9,7 +9,7 @@
     </div>
     <div class="flex flex-col flex-1">
       <!-- <div class="w-full border-b border-gray-100 shadow toolbar"></div> -->
-      <Toolbar :graph="graph" :toolbar="toolbar" />
+      <Toolbar :graph="graph" :toolbar="toolbar" v-if="showToolbar" />
       <div class="flex-1 w-full editor-container">
         <div class="editor-outline"></div>
       </div>
@@ -57,8 +57,16 @@ onMounted(() => {
     )
   }
 })
+const showToolbar = ref<boolean>(true)
+const reloadToolbar = () => {
+  showToolbar.value = false
+  setTimeout(() => {
+    showToolbar.value = true
+  }, 0)
+}
 defineExpose({
-  graph: graph
+  graph: graph,
+  reloadToolbar
 })
 </script>
 
