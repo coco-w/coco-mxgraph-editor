@@ -88,16 +88,16 @@ onMounted(() => {
   ]
   const graph = draw.value.graph
   graph._initRotate()
-  // graph.insertVertex(
-  //   graph.defaultParent,
-  //   null,
-  //   'hell',
-  //   20,
-  //   20,
-  //   100,
-  //   200,
-  //   'shape=image;html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;imageAspect=0;image=https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png;rotation=89;'
-  // )
+  graph.insertVertex(
+    graph.defaultParent,
+    null,
+    'hell',
+    60,
+    60,
+    60,
+    60,
+    'shape=image;verticalLabelPosition=top;labelBackgroundColor=#ffffff;verticalAlign=top;imageAspect=0;image=https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png;'
+  )
 })
 const beforeAddVertex = (cell: mxCell) => {
   return true
