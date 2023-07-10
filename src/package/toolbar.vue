@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mx-toolbar w-full border-b border-gray-100 shadow flex justify-start"
+    class="flex justify-start w-full border-b border-gray-100 shadow mx-toolbar"
   >
     <div
       v-for="item in toolbar"

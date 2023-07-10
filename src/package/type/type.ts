@@ -70,5 +70,6 @@ export interface DrawProps extends ToolbarProps, SidebarProps {
   cellRightClick?: (cells: mxCell[], menu: mxPopupMenuHandler) => void
   beforeDeleteCell?: (cell: mxCell) => boolean
   beforeAddVertex?: (cell: mxCell) => boolean
+  handleRotate?: (cell: mxCell) => void
   outlineMap?: boolean
 }

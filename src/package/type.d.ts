@@ -53,4 +53,11 @@ declare module 'mxgraph' {
       flipV?: boolean
     )
   }
+  export interface mxVertexHandler {
+    currentAlpha: number
+    startAngle: number
+    startDist: number
+    selectionBorder: any
+    livePreviewActive: boolean
+  }
 }

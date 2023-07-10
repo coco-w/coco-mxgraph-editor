@@ -46,6 +46,7 @@ onMounted(() => {
   graph.value.cellRightClick = props.cellRightClick
   graph.value.beforeDeleteCell = props.beforeDeleteCell
   graph.value.beforeAddVertex = props.beforeAddVertex
+  graph.value.handleRotate = props.handleRotate
   graph.value._init()
   window.graph = unref(graph.value)
 

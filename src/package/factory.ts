@@ -242,4 +242,85 @@ mx.mxConnectionHandler.prototype.originConnect = function (
   }
 }
 
+mx.mxVertexHandler.prototype.rotateVertex = function (me) {
+  var point = new mx.mxPoint(me.getGraphX(), me.getGraphY())
+  var dx = this.state.x + this.state.width / 2 - point.x
+  var dy = this.state.y + this.state.height / 2 - point.y
+  this.currentAlpha =
+    dx != 0 ? (Math.atan(dy / dx) * 180) / Math.PI + 90 : dy < 0 ? 180 : 0
+
+  if (dx > 0) {
+    this.currentAlpha -= 180
+  }
+
+  this.currentAlpha -= this.startAngle
+  let raster = 0
+  // Rotation raster
+  if (this.rotationRaster && this.graph.isGridEnabledEvent(me.getEvent())) {
+    var dx = point.x - this.state.getCenterX()
+    var dy = point.y - this.state.getCenterY()
+    var dist = Math.sqrt(dx * dx + dy * dy)
+
+    if (dist - this.startDist < 2) {
+      raster = 15
+    } else if (dist - this.startDist < 25) {
+      raster = 5
+    } else {
+      raster = 1
+    }
+
+    this.currentAlpha = Math.round(this.currentAlpha / raster) * raster
+  } else {
+    this.currentAlpha = this.roundAngle(this.currentAlpha)
+  }
+
+  this.selectionBorder.rotation = this.currentAlpha
+  this.selectionBorder.redraw()
+
+  if (this.livePreviewActive) {
+    this.redrawHandles()
+  }
+}
+
+mx.mxVertexHandler.prototype.rotateCell = function (cell, angle, parent) {
+  if (angle != 0) {
+    var model = this.graph.getModel()
+
+    if (model.isVertex(cell) || model.isEdge(cell)) {
+      if (!model.isEdge(cell)) {
+        var state = this.graph.view.getState(cell)
+        var style = state != null ? state.style : this.graph.getCellStyle(cell)
+
+        if (style != null) {
+          var total = (style[mx.mxConstants.STYLE_ROTATION] || 0) + angle
+          this.graph.setCellStyles(mx.mxConstants.STYLE_ROTATION, total, [cell])
+        }
+      }
+
+      var geo = this.graph.getCellGeometry(cell)
+
+      if (geo != null) {
+        var pgeo = this.graph.getCellGeometry(parent)
+
+        if (pgeo != null && !model.isEdge(parent)) {
+          geo = geo.clone()
+          geo.rotate(angle, new mx.mxPoint(pgeo.width / 2, pgeo.height / 2))
+          model.setGeometry(cell, geo)
+        }
+
+        if ((model.isVertex(cell) && !geo.relative) || model.isEdge(cell)) {
+          // Recursive rotation
+          var childCount = model.getChildCount(cell)
+
+          for (var i = 0; i < childCount; i++) {
+            this.rotateCell(model.getChildAt(cell, i), angle, cell)
+          }
+
+          this.graph.fireEvent(new mx.mxEventObject('rotate'), cell)
+        }
+      }
+    }
+  }
+}
+
 export default mx
