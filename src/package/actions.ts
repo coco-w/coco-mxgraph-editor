@@ -176,7 +176,7 @@ export class Action {
       'toBack',
       new ActionItem(
         () => {
-          this.graph.orderCells(false)
+          this.graph.orderCells(true)
         },
         '置于底部',
         `${ctrlKey}+Shift+B`
@@ -187,7 +187,7 @@ export class Action {
       'toFront',
       new ActionItem(
         () => {
-          this.graph.orderCells(true)
+          this.graph.orderCells(false)
         },
         '置于顶部',
         `${ctrlKey}+Shift+Y`
