@@ -27,7 +27,7 @@ import mx from './factory'
 // import { NodeObj } from './type'
 import _ from 'lodash'
 import MyGraph from './graph'
-import { mxCell as TypeMxCell } from 'mxgraph'
+import { mxCell as TypeMxCell, mxDragSource } from 'mxgraph'
 import {
   SidebarNodeConfig,
   NodeConfig,
@@ -98,7 +98,6 @@ const loadNodes = async () => {
   // }
   await nextTick()
   htmls.value.forEach((ele) => {
-    console.log(elMenu.value)
     elMenu.value.open(ele.name)
   })
 
@@ -268,8 +267,9 @@ const dropSuccessCb = function (
     props.graph?.sidebarToGraph(selectCell.value, x, y, target)
   }
 }
-
+const drags = shallowRef<mxDragSource[]>([])
 const makeDraggableAndHover = () => {
+  drags.value.forEach((ele) => ele.setEnabled(false))
   const doms = document.querySelectorAll('.sidebar_item')
   doms.forEach((ele) => {
     const dragElt = document.createElement('div')
@@ -278,7 +278,7 @@ const makeDraggableAndHover = () => {
     dragElt.style.width = `${width}px`
     dragElt.style.height = `${height}px`
     dragElt.style.border = '1px dashed #000'
-    mxUtils.makeDraggable(
+    const d = mxUtils.makeDraggable(
       ele as HTMLElement,
       props.graph as MyGraph,
       dropSuccessCb,
@@ -288,6 +288,7 @@ const makeDraggableAndHover = () => {
       undefined,
       true
     )
+    drags.value.push(d)
   })
 }
 
