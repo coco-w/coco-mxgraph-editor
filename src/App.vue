@@ -8,6 +8,9 @@
       ref="draw"
       :beforeAddVertex="beforeAddVertex"
       :handleRotate="handleRotate"
+      :handleGeomertyChange="handleGeomertyChange"
+      :handleStyleChange="handleStyleChange"
+      :handleAddVertex="handleAddVertex"
     >
       <!-- <template #sidebar>asdasdasd</template> -->
     </drawVue>
@@ -110,6 +113,25 @@ const handleClick = () => {
 }
 const handleRotate = () => {
   console.log(123123)
+}
+
+const handleGeomertyChange = (
+  cell: mxCell[],
+  key: string,
+  value: number | string
+) => {
+  console.log(cell, key, value)
+}
+const handleStyleChange = (
+  cell: mxCell[],
+  key: string,
+  value: number | string
+) => {
+  console.log(cell, key, value)
+}
+
+const handleAddVertex = () => {
+  console.log('handleAddVertex')
 }
 </script>
 
