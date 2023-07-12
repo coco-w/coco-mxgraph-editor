@@ -11,7 +11,8 @@
     <div class="flex flex-col flex-1 w-1">
       <!-- <div class="w-full border-b border-gray-100 shadow toolbar"></div> -->
       <Toolbar :graph="graph" :toolbar="toolbar" v-if="showToolbar" />
-      <div class="flex-1 w-full editor-container">
+      <div class="flex-1 w-full relative">
+        <div class="editor-container w-full h-full"></div>
         <div class="editor-outline"></div>
       </div>
     </div>

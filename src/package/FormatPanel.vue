@@ -1,6 +1,6 @@
 <template>
   <div
-    class="shadow overflow-auto h-full"
+    class="shadow overflow-auto h-full z-40"
     style="width: 250px; background: #f6f7f8"
     v-if="showFormat"
   >
